@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using _Game.Scripts;
 using Colyseus;
-using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 public class MultiplayerManager : ColyseusManager<MultiplayerManager>
@@ -14,10 +13,10 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
         base.Awake();
         
         Instance.InitializeClient();
-        Connect().Forget();
+        Connect();
     }
 
-    private async UniTaskVoid Connect()
+    private async void Connect()
     {
         _room = await Instance.client.JoinOrCreate<State>("state_handler");
 
