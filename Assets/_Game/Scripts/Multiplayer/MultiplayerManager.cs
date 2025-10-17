@@ -1,27 +1,31 @@
 using System.Collections.Generic;
 using _Game.Scripts;
+using _Game.Scripts.Factory;
 using Colyseus;
 using UnityEngine;
+using VContainer;
 
 public class MultiplayerManager : ColyseusManager<MultiplayerManager>
 {
-    [SerializeField] private GameObject _playerPrefab;
+    [Inject] private GameObjectFactory<Character> _playerFactory;
+    [Inject] private GameObjectFactory<EnemyController> _enemyFactory;
+    
+    [SerializeField] private Character _playerPrefab;
     [SerializeField] private EnemyController _enemy;
+    
     private ColyseusRoom<State> _room;
+    
     protected override void Awake()
     {
-        base.Awake();
-        
-        Instance.InitializeClient();
+        InitializeClient();
         Connect();
     }
 
     private async void Connect()
     {
-        _room = await Instance.client.JoinOrCreate<State>("state_handler");
+        _room = await client.JoinOrCreate<State>("state_handler");
 
         _room.OnStateChange += OnChange;
-        
     }
 
     private void OnChange(State state, bool isfirststate)
@@ -51,15 +55,15 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
     private void CreatePlayer(Player player)
     {
         Vector3 position = new Vector3(player.x , 0, player.y );
-        
-        Instantiate(_playerPrefab, position, Quaternion.identity);
+
+        _playerFactory.Create(_playerPrefab, position, Quaternion.identity);
     }
 
     private void CreateEnemy(string key , Player player)
     {
         Vector3 position = new Vector3(player.x , 0, player.y );
-        
-        EnemyController enemy =  Instantiate(_enemy, position, Quaternion.identity);
+
+        EnemyController enemy = _enemyFactory.Create(_enemy, position, Quaternion.identity);
         player.OnChange += enemy.OnChange;
     }
 

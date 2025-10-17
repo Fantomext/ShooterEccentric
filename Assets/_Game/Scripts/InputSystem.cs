@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using VContainer;
 
 namespace _Game.Scripts
 {
     public class InputSystem : IDisposable
     {
+        [Inject] private MultiplayerManager _multiplayerManager;
+        
         private PlayerInput _playerInput;
         private Character _player;
 
@@ -47,8 +50,7 @@ namespace _Game.Scripts
                     { "y", position.z},
 
                 };
-            MultiplayerManager.Instance.SendMessage("move", data);
+            _multiplayerManager.SendMessage("move", data);
         }
-        
     }
 }
