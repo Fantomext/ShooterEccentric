@@ -8,17 +8,18 @@ namespace _Game.Scripts
 {
     public class InputSystem : IDisposable
     {
-        [Inject] private MultiplayerManager _multiplayerManager;
+        private MultiplayerManager _multiplayerManager;
         
         private PlayerInput _playerInput;
         private Character _player;
 
         public event Action<Vector2> OnMove;
 
-        public InputSystem(Character player)
+        public InputSystem(Character player, MultiplayerManager multiplayerManager)
         {
             _playerInput = new PlayerInput();
             _player = player;
+            _multiplayerManager = multiplayerManager;
         }
 
         public void Initialize()

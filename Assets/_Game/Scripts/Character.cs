@@ -1,9 +1,12 @@
 using System;
 using _Game.Scripts;
 using UnityEngine;
+using VContainer;
 
 public class Character : MonoBehaviour
 {
+    [Inject] private MultiplayerManager _multiplayerManager;
+    
     [SerializeField] private float _speed = 2f;
     
     private InputSystem _inputSystem;
@@ -13,7 +16,7 @@ public class Character : MonoBehaviour
 
     private void Awake()
     {
-        _inputSystem = new InputSystem(this);
+        _inputSystem = new InputSystem(this, _multiplayerManager);
         _inputSystem.Initialize();
     }
 
@@ -30,7 +33,6 @@ public class Character : MonoBehaviour
     private void Update()
     {
         Move();
-        SendInfo();
     }
 
     private void SendInfo()

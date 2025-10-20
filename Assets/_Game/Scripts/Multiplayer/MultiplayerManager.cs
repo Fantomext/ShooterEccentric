@@ -14,13 +14,13 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
     [SerializeField] private EnemyController _enemy;
     
     private ColyseusRoom<State> _room;
-    
-    protected override void Awake()
+
+    public void Init()
     {
         InitializeClient();
         Connect();
     }
-
+    
     private async void Connect()
     {
         _room = await client.JoinOrCreate<State>("state_handler");

@@ -6,11 +6,14 @@ using VContainer.Unity;
 
 public class LevelEntryPoint : IInitializable
 {
+    private readonly LevelAssetLoader _levelAssetLoader;
+    private readonly MultiplayerManager _multiplayerManager;
     
     [Inject]
-    public LevelEntryPoint(LevelAssetLoader loader)
+    public LevelEntryPoint(LevelAssetLoader loader, MultiplayerManager multiplayerManager)
     {
-        
+        _levelAssetLoader = loader;
+        _multiplayerManager = multiplayerManager;
     }
     
     public async void Initialize()
@@ -22,11 +25,11 @@ public class LevelEntryPoint : IInitializable
 
     public async UniTask InitAsync()
     {
-        
+        //Загрузить все ассеты через assetloader
     }
 
     public void Init()
     {
-            
+            _multiplayerManager.Init();
     }
 }
