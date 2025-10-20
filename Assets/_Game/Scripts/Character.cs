@@ -33,6 +33,7 @@ public class Character : MonoBehaviour
     private void Update()
     {
         Move();
+        SendInfo();
     }
 
     private void SendInfo()
