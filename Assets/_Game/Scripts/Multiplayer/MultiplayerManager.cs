@@ -13,6 +13,8 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
     [Inject] private GameObjectFactory<EnemyController> _enemyFactory;
     [Inject] private LevelAssetLoader _levelAssetLoader;
     
+    private const string StateHandler = "state_handler";
+    
     private Character _playerPrefab;
     private EnemyController _enemy;
     
@@ -31,7 +33,7 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
         _playerPrefab = await _levelAssetLoader.LoadWithoutSpawn<Character>("Player");
         _enemy = await _levelAssetLoader.LoadWithoutSpawn<EnemyController>("Enemy");
         
-        _room = await client.JoinOrCreate<State>("state_handler");
+        _room = await client.JoinOrCreate<State>(StateHandler);
 
         _room.OnStateChange += OnChange;
     }
@@ -53,13 +55,6 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
         _room.State.players.OnRemove += RemoveEnemy;
     }
 
-    private void ForEachEnemy(string key, Player player)
-    {
-        if (key == _room.SessionId)
-            return;
-        
-    }
-
     private void CreatePlayer(Player player)
     {
         Vector3 position = new Vector3(player.x , 0, player.y);
@@ -69,20 +64,24 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
 
     private void CreateEnemy(string key , Player player)
     {
+        if (_players.ContainsKey(key))
+            return;
+        
         Vector3 position = new Vector3(player.x , 0, player.y );
 
         EnemyController enemy = _enemyFactory.Create(_enemy, position, Quaternion.identity);
         player.OnChange += enemy.OnChange;
-        _players.TryAdd(key, enemy);
-
+        _players.Add(key, enemy);
     }
 
-    private void RemoveEnemy(string key, Player value)
+    private void RemoveEnemy(string key, Player player)
     {
-        if (!_players.TryGetValue(key, out var player)) 
+        if (!_players.TryGetValue(key, out var enemy)) 
             return;
         
-        Destroy(player.gameObject);
+        player.OnChange -= enemy.OnChange;
+        
+        Destroy(enemy.gameObject);
         _players.Remove(key);
 
     }
@@ -96,6 +95,10 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
     {
         base.OnDestroy();
 
+        _room.State.players.OnAdd -= CreateEnemy;
+        _room.State.players.OnRemove -= RemoveEnemy;
+        _room.OnStateChange -= OnChange;
+        
         _room.Leave();
     }
 }

@@ -12,6 +12,8 @@ namespace _Game.Scripts
         private PlayerInput _playerInput;
         private Character _player;
 
+        private const string ChangePosition = "move";
+
         public event Action<Vector2> OnMove;
 
         public InputSystem(Character player, MultiplayerManager multiplayerManager)
@@ -51,7 +53,7 @@ namespace _Game.Scripts
 
                 };
             
-            _multiplayerManager.SendMessage("move", data);
+            _multiplayerManager.SendMessage(ChangePosition, data);
         }
     }
 }
