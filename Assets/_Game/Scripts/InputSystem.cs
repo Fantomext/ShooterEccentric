@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using VContainer;
 
 namespace _Game.Scripts
 {
@@ -51,6 +50,7 @@ namespace _Game.Scripts
                     { "y", position.z},
 
                 };
+            
             _multiplayerManager.SendMessage("move", data);
         }
     }

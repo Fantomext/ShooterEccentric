@@ -20,7 +20,7 @@ namespace _Game.Scripts.AssetLoader
         {
             _resolver = resolver;
         }
-
+        
         public async UniTask<T> Load<T>(string path) where T : MonoBehaviour
         {
             AsyncOperationHandle<GameObject> handle = Addressables.LoadAssetAsync<GameObject>(path);

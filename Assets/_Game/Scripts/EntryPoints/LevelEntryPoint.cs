@@ -1,4 +1,3 @@
-using System;
 using _Game.Scripts.AssetLoader;
 using Cysharp.Threading.Tasks;
 using VContainer;
@@ -20,16 +19,17 @@ public class LevelEntryPoint : IInitializable
     {
         await InitAsync();
         Init();
+        //Игра готова к старту
             
     }
 
     public async UniTask InitAsync()
     {
-        //Загрузить все ассеты через assetloader
+        //Добавить загрузку всех ассетов, чтобы не каждый класс сам просил её.
+        await _multiplayerManager.Init();
     }
 
     public void Init()
     {
-            _multiplayerManager.Init();
     }
 }
