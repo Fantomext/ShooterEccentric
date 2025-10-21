@@ -11,14 +11,12 @@ namespace _Game.Scripts
         private MultiplayerManager _multiplayerManager;
         
         private PlayerInput _playerInput;
-        private Character _player;
 
         public event Action<Vector2> OnMove;
 
         public InputSystem(Character player, MultiplayerManager multiplayerManager)
         {
             _playerInput = new PlayerInput();
-            _player = player;
             _multiplayerManager = multiplayerManager;
         }
 
@@ -27,7 +25,6 @@ namespace _Game.Scripts
             _playerInput.Enable();
             _playerInput.Player.Move.performed += Move;
             _playerInput.Player.Move.canceled += Move;
-            _player.OnMove += SendMessage;
         }
         
         public void Dispose()
@@ -39,7 +36,9 @@ namespace _Game.Scripts
 
         private void Move(InputAction.CallbackContext obj)
         {
-            OnMove?.Invoke(_playerInput.Player.Move.ReadValue<Vector2>());
+            Vector3 input = _playerInput.Player.Move.ReadValue<Vector2>();
+            OnMove?.Invoke(input);
+            SendMessage(new Vector3(input.x, 0, input.y));
         }
 
         private void SendMessage(Vector3 position)

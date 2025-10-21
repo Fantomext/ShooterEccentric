@@ -32,13 +32,7 @@ public class Character : MonoBehaviour
 
     private void Update()
     {
-        Move();
-        SendInfo();
-    }
-
-    private void SendInfo()
-    {
-        OnMove?.Invoke(transform.position);
+        //Move();
     }
 
     private void ChangeDirection(Vector2 input)

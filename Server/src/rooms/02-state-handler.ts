@@ -7,6 +7,12 @@ export class Player extends Schema {
 
     @type("number")
     y = Math.floor(Math.random() * 50) - 25;
+
+    @type("number")
+    xSpeed = 0;
+
+    @type("number")
+    ySpeed = 0;
 }
 
 export class State extends Schema {
@@ -25,15 +31,15 @@ export class State extends Schema {
 
     movePlayer (sessionId: string, movement: any) {
         if (movement.x)
-            this.players.get(sessionId).x = movement.x;
+            this.players.get(sessionId).xSpeed = movement.x;
         if (movement.y)
-            this.players.get(sessionId).y = movement.y;
+            this.players.get(sessionId).ySpeed = movement.y;
 
     }
 }
 
 export class StateHandlerRoom extends Room<State> {
-    maxClients = 4;
+    maxClients = 8;
 
     onCreate (options) {
         console.log("StateHandlerRoom created!", options);
@@ -44,6 +50,18 @@ export class StateHandlerRoom extends Room<State> {
             console.log("StateHandlerRoom received message from", client.sessionId, ":", data);
             this.state.movePlayer(client.sessionId, data);
         });
+
+        this.setSimulationInterval(() => this.update());
+    }
+
+    update()
+    {
+        this.state.players.forEach((player) => {
+            player.x += player.xSpeed;
+            player.y += player.ySpeed;
+
+            console.log(player.x, ":", player.y);
+        })
     }
 
     onAuth(client, options, req) {
