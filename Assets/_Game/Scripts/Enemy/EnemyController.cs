@@ -9,16 +9,34 @@ namespace _Game.Scripts
         public void OnChange(List<DataChange> changes)
         {
             Vector3 position = transform.position;
+            Vector3 velocty = Vector3.zero;
+            
             foreach (var dataChange in changes)
             {
                 switch (dataChange.Field)
                 {
-                    case "x":
+                    case "pX":
                         position.x = (float)dataChange.Value;
                         break;
                     
-                    case "y":
+                    case "pY":
+                        position.y = (float)dataChange.Value;
+                        break;
+                    
+                    case "pZ":
                         position.z = (float)dataChange.Value;
+                        break;
+                    
+                    case "vX":
+                        velocty.x = (float)dataChange.Value;
+                        break;
+                        
+                    case "vY":
+                        velocty.y = (float)dataChange.Value;
+                        break;
+                    
+                    case "vZ":
+                        velocty.z = (float)dataChange.Value;
                         break;
                     
                     default:

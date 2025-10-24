@@ -57,7 +57,7 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
 
     private void CreatePlayer(Player player)
     {
-        Vector3 position = new Vector3(player.x , 0, player.y);
+        Vector3 position = new Vector3(player.pX , player.pY, player.pZ );
 
         _playerFactory.Create(_playerPrefab, position, Quaternion.identity);
     }
@@ -67,7 +67,7 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
         if (_players.ContainsKey(key))
             return;
         
-        Vector3 position = new Vector3(player.x , 0, player.y );
+        Vector3 position = new Vector3(player.pX , player.pY, player.pZ );
 
         EnemyController enemy = _enemyFactory.Create(_enemy, position, Quaternion.identity);
         player.OnChange += enemy.OnChange;
@@ -94,6 +94,9 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
     protected override void OnDestroy()
     {
         base.OnDestroy();
+
+        if (_room == null)
+            return;
 
         _room.State.players.OnAdd -= CreateEnemy;
         _room.State.players.OnRemove -= RemoveEnemy;

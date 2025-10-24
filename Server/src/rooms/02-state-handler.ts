@@ -3,10 +3,22 @@ import { Schema, type, MapSchema } from "@colyseus/schema";
 
 export class Player extends Schema {
     @type("number")
-    x = Math.floor(Math.random() * 50) - 25;
+    pX = Math.floor(Math.random() * 50) - 25;
 
     @type("number")
-    y = Math.floor(Math.random() * 50) - 25;
+    pY = 0;
+
+    @type("number")
+    pZ = Math.floor(Math.random() * 50) - 25;
+
+    @type("number")
+    vX = 0;
+
+    @type("number")
+    vY = 0;
+
+    @type("number")
+    vZ = 0;
 }
 
 export class State extends Schema {
@@ -24,10 +36,14 @@ export class State extends Schema {
     }
 
     movePlayer (sessionId: string, movement: any) {
-        if (movement.x)
-            this.players.get(sessionId).x = movement.x;
-        if (movement.y)
-            this.players.get(sessionId).y = movement.y;
+
+        this.players.get(sessionId).pX = movement.pX;
+        this.players.get(sessionId).pY = movement.pY;
+        this.players.get(sessionId).pZ = movement.pZ;
+
+        this.players.get(sessionId).vX = movement.vX;
+        this.players.get(sessionId).vY = movement.vY;
+        this.players.get(sessionId).vZ = movement.vZ;
 
     }
 }

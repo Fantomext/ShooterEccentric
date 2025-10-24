@@ -48,8 +48,13 @@ namespace _Game.Scripts
             Dictionary<string, object> data
                 = new Dictionary<string, object>()
                 {
-                    { "x", position.x},
-                    { "y", position.z},
+                    { "pX", position.x},
+                    { "pY", position.y},
+                    { "pZ", position.z},
+                    
+                    { "vX", 0},
+                    { "vY", 0},
+                    { "vZ", 0},
 
                 };
             
