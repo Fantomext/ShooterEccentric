@@ -6,9 +6,38 @@ namespace _Game.Scripts
 {
     public class EnemyController : MonoBehaviour
     {
+        [SerializeField] private EnemyCharacter _character;
+        
+        private List<float> _timeInterval = new List<float>() {0,0,0,0,0};
+        private float _lastReceiveTime;
+
+        private float AverageTimeInterval
+        {
+            get
+            {
+                float summ = 0;
+                for (int i = 0; i < _timeInterval.Count; i++)
+                {
+                    summ += _timeInterval[i];
+                }
+                return summ / _timeInterval.Count;
+            }
+        }
+
+        private void SaveReceiveTime()
+        {
+            float interval = Time.time - _lastReceiveTime;
+            _lastReceiveTime = Time.time;
+            
+            _timeInterval.Add(interval);
+            _timeInterval.RemoveAt(0);
+        }
+        
         public void OnChange(List<DataChange> changes)
         {
-            Vector3 position = transform.position;
+            SaveReceiveTime();
+
+            Vector3 position = _character.TargetPosition;
             Vector3 velocty = Vector3.zero;
             
             foreach (var dataChange in changes)
@@ -45,7 +74,7 @@ namespace _Game.Scripts
                 }
             }
             
-            transform.position = position;
+            _character.SetMovement(position, velocty, AverageTimeInterval);
         }
     }
 }
