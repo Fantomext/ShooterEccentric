@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
@@ -7,6 +8,8 @@ namespace _Game.Scripts.Factory
     public class GameObjectFactory<T> where T : MonoBehaviour
     {
         private readonly IObjectResolver _resolver;
+        
+        public event Action<MonoBehaviour> OnCreate;
 
         [Inject]
         public GameObjectFactory(IObjectResolver resolver)
@@ -19,7 +22,9 @@ namespace _Game.Scripts.Factory
             T instance;
 
             instance = _resolver.Instantiate(prefab);
-
+            
+            OnCreate?.Invoke(instance);
+            
             return instance;
         }
 
@@ -29,6 +34,8 @@ namespace _Game.Scripts.Factory
             
             instance = _resolver.Instantiate(prefab, position, rotation);
             
+            OnCreate?.Invoke(instance);
+            
             return instance;
         }
 
@@ -37,6 +44,8 @@ namespace _Game.Scripts.Factory
             T instance;
 
             instance = _resolver.Instantiate(prefab, parent);
+            
+            OnCreate?.Invoke(instance);
 
             return instance;
         }

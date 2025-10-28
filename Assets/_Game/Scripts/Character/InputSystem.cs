@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using _Game.Scripts.Providers;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -7,35 +7,74 @@ namespace _Game.Scripts
 {
     public class InputSystem : IDisposable
     {
-        private MultiplayerManager _multiplayerManager;
+        private readonly PlayerInput _playerInput;
         
-        private PlayerInput _playerInput;
-        private Character _player;
-
-        private const string ChangePosition = "move";
+        private PlayerCharacter _player;
+        
+        public bool IsShoot { get; private set; }
+        public bool IsMoving { get; private set; }
+        public bool IsAiming { get; private set; }
+        
+        private float _mouseSensitivity = 0.2f;
 
         public event Action<Vector2> OnMove;
+        public event Action<Vector2> OnCameraDirectionChanged;
+        public event Action OnJump;
+        public event Action OnShootStart;
+        public event Action OnShootEnd;
 
-        public InputSystem(Character player, MultiplayerManager multiplayerManager)
+        public InputSystem(PlayerProvider provider, MultiplayerManager multiplayerManager)
         {
             _playerInput = new PlayerInput();
-            _player = player;
-            _multiplayerManager = multiplayerManager;
         }
 
         public void Initialize()
         {
             _playerInput.Enable();
+            
             _playerInput.Player.Move.performed += Move;
             _playerInput.Player.Move.canceled += Move;
-            _player.OnMove += SendMessage;
+            
+            _playerInput.Player.Mouse.performed += CameraInput;
+            _playerInput.Player.Mouse.canceled += CameraInput;
+
+            _playerInput.Player.Jump.performed += Jump;
+
+            _playerInput.Player.Shoot.performed += Shoot;
+            _playerInput.Player.Shoot.canceled += ShootEnd;
         }
-        
+
         public void Dispose()
         {
             _playerInput.Disable();
+            
             _playerInput.Player.Move.performed -= Move;
             _playerInput.Player.Move.canceled -= Move;
+            
+            _playerInput.Player.Mouse.performed -= CameraInput;
+            _playerInput.Player.Mouse.canceled -= CameraInput;
+        }
+        
+        private void Shoot(InputAction.CallbackContext obj)
+        {
+            IsShoot = true;
+            OnShootStart?.Invoke();
+        }
+        
+        private void ShootEnd(InputAction.CallbackContext obj)
+        {
+            IsShoot = false;
+            OnShootEnd?.Invoke();
+        }
+
+        private void CameraInput(InputAction.CallbackContext obj)
+        {
+            OnCameraDirectionChanged?.Invoke(_playerInput.Player.Mouse.ReadValue<Vector2>() * _mouseSensitivity);
+        }
+
+        private void Jump(InputAction.CallbackContext obj)
+        {
+            OnJump?.Invoke();
         }
 
         private void Move(InputAction.CallbackContext obj)
@@ -43,22 +82,5 @@ namespace _Game.Scripts
             OnMove?.Invoke(_playerInput.Player.Move.ReadValue<Vector2>());
         }
 
-        private void SendMessage(Vector3 position)
-        {
-            Dictionary<string, object> data
-                = new Dictionary<string, object>()
-                {
-                    { "pX", position.x},
-                    { "pY", position.y},
-                    { "pZ", position.z},
-                    
-                    { "vX", 0},
-                    { "vY", 0},
-                    { "vZ", 0},
-
-                };
-            
-            _multiplayerManager.SendMessage(ChangePosition, data);
-        }
     }
 }

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using _Game.Scripts;
 using _Game.Scripts.AssetLoader;
 using _Game.Scripts.Factory;
+using _Game.Scripts.Providers;
 using Colyseus;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -9,14 +10,14 @@ using VContainer;
 
 public class MultiplayerManager : ColyseusManager<MultiplayerManager>
 {
-    [Inject] private GameObjectFactory<Character> _playerFactory;
+    [Inject] private PlayerProvider _playerProvider;
     [Inject] private GameObjectFactory<EnemyController> _enemyFactory;
     [Inject] private LevelAssetLoader _levelAssetLoader;
     
     private const string StateHandler = "state_handler";
     
-    private Character _playerPrefab;
     private EnemyController _enemy;
+    private PlayerCharacter _player;
     
     private Dictionary<string, EnemyController> _players = new Dictionary<string, EnemyController>();
     
@@ -30,12 +31,30 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
     
     private async UniTask Connect()
     {
-        _playerPrefab = await _levelAssetLoader.LoadWithoutSpawn<Character>("Player");
+        _player = _playerProvider.GetCharacter();
         _enemy = await _levelAssetLoader.LoadWithoutSpawn<EnemyController>("Enemy");
         
-        _room = await client.JoinOrCreate<State>(StateHandler);
+        Dictionary<string, object> data = new Dictionary<string, object>()
+        {
+            {"speed", _player.Speed}
+        };
+        
+        _room = await client.JoinOrCreate<State>(StateHandler, data);
+        
 
         _room.OnStateChange += OnChange;
+        _room.OnMessage<string>("Shoot", ShootEvent);
+    }
+
+    private void ShootEvent(string jsonShootInfo)
+    {
+        var data = JsonUtility.FromJson<ShootInfo>(jsonShootInfo);
+
+        if (_players.TryGetValue(data.key, out var enemy))
+            return;
+        
+        enemy.Shoot(data);
+        
     }
 
     private void OnChange(State state, bool isfirststate)
@@ -57,9 +76,7 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
 
     private void CreatePlayer(Player player)
     {
-        Vector3 position = new Vector3(player.pX , player.pY, player.pZ );
-
-        _playerFactory.Create(_playerPrefab, position, Quaternion.identity);
+        _player.transform.position = new Vector3(player.pX , player.pY, player.pZ );
     }
 
     private void CreateEnemy(string key , Player player)
@@ -70,7 +87,7 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
         Vector3 position = new Vector3(player.pX , player.pY, player.pZ );
 
         EnemyController enemy = _enemyFactory.Create(_enemy, position, Quaternion.identity);
-        player.OnChange += enemy.OnChange;
+        enemy.Init(player);
         _players.Add(key, enemy);
     }
 
@@ -86,7 +103,16 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
 
     }
 
+    public string ReturnSessionId()
+    {
+        return _room.SessionId;
+    }
     public void SendMessage(string key, Dictionary<string, object> data)
+    {
+        _room.Send(key, data);
+    }
+
+    public void SendMessage(string key, string data)
     {
         _room.Send(key, data);
     }

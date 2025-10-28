@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Colyseus.Schema;
 using UnityEngine;
 
@@ -8,20 +9,30 @@ namespace _Game.Scripts
     {
         [SerializeField] private EnemyCharacter _character;
         
+        private Player _player;
         private List<float> _timeInterval = new List<float>() {0,0,0,0,0};
         private float _lastReceiveTime;
+        
+        Vector2 _rotation = Vector2.zero;
 
         private float AverageTimeInterval
         {
             get
             {
                 float summ = 0;
+                
                 for (int i = 0; i < _timeInterval.Count; i++)
-                {
                     summ += _timeInterval[i];
-                }
+                
                 return summ / _timeInterval.Count;
             }
+        }
+
+        public void Init(Player player)
+        {
+            _player = player;
+            _player.OnChange += OnChange;
+            _character.SetSpeed(_player.speed);
         }
 
         private void SaveReceiveTime()
@@ -38,7 +49,7 @@ namespace _Game.Scripts
             SaveReceiveTime();
 
             Vector3 position = _character.TargetPosition;
-            Vector3 velocty = Vector3.zero;
+            Vector3 velocty = _character.Velocity;
             
             foreach (var dataChange in changes)
             {
@@ -68,6 +79,14 @@ namespace _Game.Scripts
                         velocty.z = (float)dataChange.Value;
                         break;
                     
+                    case "rX":
+                        _rotation.x = (float)dataChange.Value;
+                        break;
+                    
+                    case "rY":
+                        _rotation.y = (float)dataChange.Value;
+                        break;
+                    
                     default:
                         Debug.LogWarning($"{dataChange.Field} is not a valid field");
                         break;
@@ -75,6 +94,17 @@ namespace _Game.Scripts
             }
             
             _character.SetMovement(position, velocty, AverageTimeInterval);
+            _character.SetRotate(_rotation);
+        }
+
+        public void Shoot(ShootInfo info)
+        {
+            
+        }
+
+        private void OnDestroy()
+        {
+            _player.OnChange -= OnChange;
         }
     }
 }
