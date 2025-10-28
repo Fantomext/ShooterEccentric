@@ -51,10 +51,7 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
         var data = JsonUtility.FromJson<ShootInfo>(jsonShootInfo);
 
         if (_players.TryGetValue(data.key, out var enemy))
-            return;
-        
-        enemy.Shoot(data);
-        
+            enemy.Shoot(data);
     }
 
     private void OnChange(State state, bool isfirststate)

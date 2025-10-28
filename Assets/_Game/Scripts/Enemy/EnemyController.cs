@@ -15,6 +15,8 @@ namespace _Game.Scripts
         
         Vector2 _rotation = Vector2.zero;
 
+        public event Action<Vector3, Vector3> OnShoot;
+
         private float AverageTimeInterval
         {
             get
@@ -99,7 +101,10 @@ namespace _Game.Scripts
 
         public void Shoot(ShootInfo info)
         {
+            Vector3 position = new Vector3(info.pX, info.pY, info.pZ);
+            Vector3 velocty = new Vector3(info.dX, info.dY, info.dZ);
             
+            OnShoot?.Invoke(position, velocty);
         }
 
         private void OnDestroy()

@@ -4,7 +4,7 @@ using VContainer;
 
 namespace _Game.Scripts.Gun
 {
-    public class PlayerGun : MonoBehaviour
+    public class PlayerGun : Gun
     {
         [Inject] private InputSystem _inputSystem;
         [Inject] private BulletPool _bulletPool;
@@ -17,7 +17,7 @@ namespace _Game.Scripts.Gun
         
         private float _currentIntervalBetweenShoots;
 
-        public event Action<ShootInfo> OnShoot;
+        public event Action<ShootInfo> OnShootData;
 
         private void Update()
         {
@@ -32,13 +32,11 @@ namespace _Game.Scripts.Gun
                 return;
             
             Vector3 position = _bulletPoint.position;
-            Vector3 direction = _bulletPoint.forward;
+            Vector3 velocity = _bulletPoint.forward * _bulletSpeed;
             
             Bullet newBullet = _bulletPool.TakeBullet();
             newBullet.transform.position = position;
-            newBullet.Init(direction, _bulletSpeed);
-            
-            direction *= _bulletSpeed;
+            newBullet.Init(velocity);
             
             _currentIntervalBetweenShoots = Time.time;
                 
@@ -46,11 +44,11 @@ namespace _Game.Scripts.Gun
             _shootInfo.pY = position.y;
             _shootInfo.pZ = position.z;
         
-            _shootInfo.dX = direction.x;
-            _shootInfo.dY = direction.y;
-            _shootInfo.dZ = direction.z;
+            _shootInfo.dX = velocity.x;
+            _shootInfo.dY = velocity.y;
+            _shootInfo.dZ = velocity.z;
 
-            OnShoot?.Invoke(_shootInfo);
+            OnShootData?.Invoke(_shootInfo);
         }
     }
 }

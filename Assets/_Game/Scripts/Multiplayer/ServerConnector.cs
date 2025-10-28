@@ -31,7 +31,7 @@ namespace _Game.Scripts.Multiplayer
             _playerGun = _playerProvider.GetGun();
             
             _player.OnMove += SendMessage;
-            _playerGun.OnShoot += SendShoot;
+            _playerGun.OnShootData += SendShoot;
         }
         
         private void SendShoot(ShootInfo shootInfo)
@@ -66,7 +66,7 @@ namespace _Game.Scripts.Multiplayer
         public void Dispose()
         {
             _player.OnMove -= SendMessage;
-            _playerGun.OnShoot -= SendShoot;
+            _playerGun.OnShootData -= SendShoot;
         }
     }
 }

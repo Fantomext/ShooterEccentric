@@ -336,4 +336,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d871ce3352644d2e9c7fc3d015e966c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_Game.Scripts.Bullet
+  _lifeTime: 3
   _rigidbody: {fileID: 2756009754261851810}

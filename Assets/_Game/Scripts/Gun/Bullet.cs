@@ -12,9 +12,9 @@ namespace _Game.Scripts
         
         public event Action<Bullet> OnRelease;
 
-        public void Init(Vector3 direction, float speed)
+        public void Init(Vector3 velocity)
         {
-            _rigidbody.linearVelocity = direction * speed;
+            _rigidbody.linearVelocity = velocity ;
             DelayDestroy().Forget();
         }
 

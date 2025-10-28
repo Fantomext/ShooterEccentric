@@ -215,6 +215,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3d1e1d77cb245af99f3f56dec543c48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_Game.Scripts.Gun.PlayerGun
+  _speed: 0
   _bulletPoint: {fileID: 9160736684983117598}
   _bulletSpeed: 15
   _delayBetweenShoots: 0.3

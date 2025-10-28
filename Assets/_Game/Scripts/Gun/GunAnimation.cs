@@ -5,7 +5,7 @@ namespace _Game.Scripts.Gun
     public class GunAnimation : MonoBehaviour
     {
         [SerializeField] private Animator _animator;
-        [SerializeField] private PlayerGun _playerGun;
+        [SerializeField] private Gun _playerGun;
 
         private const string Shoot = "Shoot";
 
@@ -19,7 +19,7 @@ namespace _Game.Scripts.Gun
             _playerGun.OnShoot -= Shooting;
         }
 
-        private void Shooting(ShootInfo shootInfo)
+        private void Shooting()
         {
             _animator.SetTrigger(Shoot);
         }
