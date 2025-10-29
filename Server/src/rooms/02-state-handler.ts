@@ -28,6 +28,9 @@ export class Player extends Schema {
 
     @type("number")
     rY = 0;
+
+    @type("boolean")
+    sit = false;
 }
 
 export class State extends Schema {
@@ -47,23 +50,26 @@ export class State extends Schema {
         this.players.delete(sessionId);
     }
 
-    movePlayer (sessionId: string, movement: any) {
+    movePlayer (sessionId: string, data: any) {
 
         const player = this.players.get(sessionId);
 
         // Position
-        player.pX = movement.pX;
-        player.pY = movement.pY;
-        player.pZ = movement.pZ;
+        player.pX = data.pX;
+        player.pY = data.pY;
+        player.pZ = data.pZ;
 
         // Velocity
-        player.vX = movement.vX;
-        player.vY = movement.vY;
-        player.vZ = movement.vZ;
+        player.vX = data.vX;
+        player.vY = data.vY;
+        player.vZ = data.vZ;
 
         // Rotation
-        player.rX = movement.rX;
-        player.rY = movement.rY;
+        player.rX = data.rX;
+        player.rY = data.rY;
+
+        //Crouching
+        player.sit = data.sit;
 
     }
 }

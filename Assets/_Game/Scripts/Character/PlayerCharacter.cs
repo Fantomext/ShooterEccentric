@@ -37,6 +37,9 @@ public class PlayerCharacter : Character
         _inputSystem.OnMove += ChangeDirection;
         _inputSystem.OnCameraDirectionChanged += CameraChangeDirection;
         _inputSystem.OnJump += Jump;
+        
+        _inputSystem.OnCrouchStart += Crouch;
+        _inputSystem.OnCrouchEnd += UnCrouch;
     }
 
     
@@ -46,6 +49,9 @@ public class PlayerCharacter : Character
         _inputSystem.OnMove -= ChangeDirection;
         _inputSystem.OnCameraDirectionChanged -= CameraChangeDirection;
         _inputSystem.OnJump -= Jump;
+        
+        _inputSystem.OnCrouchStart -= Crouch;
+        _inputSystem.OnCrouchEnd -= UnCrouch;
     }
 
     private void Update()

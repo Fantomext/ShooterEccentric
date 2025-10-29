@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace _Game.Scripts
 {
@@ -6,6 +7,11 @@ namespace _Game.Scripts
     {
         [HideInInspector] public Vector3 TargetPosition = Vector3.zero;
         private float _velocityMagnitude = 0;
+
+        public void OnEnable()
+        {
+            
+        }
 
         public void SetSpeed(float speed)
         {

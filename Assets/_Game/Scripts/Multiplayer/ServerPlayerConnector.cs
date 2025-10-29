@@ -7,7 +7,7 @@ using VContainer;
 
 namespace _Game.Scripts.Multiplayer
 {
-    public class ServerConnector : IDisposable
+    public class ServerPlayerConnector : IDisposable
     {
         private MultiplayerManager _multiplayerManager;
         private PlayerProvider _playerProvider;
@@ -18,8 +18,10 @@ namespace _Game.Scripts.Multiplayer
         private const string ChangePosition = "move";
         private const string Shoot = "shoot";
 
+        private bool _playerIsCrouched;
+
         [Inject]
-        public ServerConnector(MultiplayerManager multiplayerManager, PlayerProvider playerProvider)
+        public ServerPlayerConnector(MultiplayerManager multiplayerManager, PlayerProvider playerProvider)
         {
             _multiplayerManager = multiplayerManager;
             _playerProvider = playerProvider;
@@ -32,6 +34,7 @@ namespace _Game.Scripts.Multiplayer
             
             _player.OnMove += SendMessage;
             _playerGun.OnShootData += SendShoot;
+            _player.OnCrouch += PlayerCrouch;
         }
         
         private void SendShoot(ShootInfo shootInfo)
@@ -40,6 +43,11 @@ namespace _Game.Scripts.Multiplayer
             string jsonShoot = JsonUtility.ToJson(shootInfo);
             
             _multiplayerManager.SendMessage(Shoot, jsonShoot);
+        }
+
+        private void PlayerCrouch(bool isCrouching)
+        {
+            _playerIsCrouched = isCrouching;
         }
         
         private void SendMessage(Vector3 position, Vector3 velocity, Vector2 rotation)
@@ -57,7 +65,8 @@ namespace _Game.Scripts.Multiplayer
                     
                     {"rX", rotation.x},
                     {"rY", rotation.y},
-
+                    
+                    {"sit", _playerIsCrouched}
                 };
             
             _multiplayerManager.SendMessage(ChangePosition, data);
@@ -67,6 +76,7 @@ namespace _Game.Scripts.Multiplayer
         {
             _player.OnMove -= SendMessage;
             _playerGun.OnShootData -= SendShoot;
+            _player.OnCrouch -= PlayerCrouch;
         }
     }
 }

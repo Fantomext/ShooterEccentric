@@ -14,21 +14,21 @@ public class LevelEntryPoint : IInitializable
     private readonly InputSystem _inputSystem;
     private readonly BulletPool _bulletPool;
     private readonly PlayerProvider _playerProvider;
-    private readonly ServerConnector _serverConnector;
+    private readonly ServerPlayerConnector _serverPlayerConnector;
     
     [Inject]
     public LevelEntryPoint(LevelAssetLoader loader, 
         MultiplayerManager multiplayerManager, 
         InputSystem inputSystem, BulletPool bulletPool, 
         PlayerProvider provider,
-        ServerConnector connector)
+        ServerPlayerConnector playerConnector)
     {
         _levelAssetLoader = loader;
         _multiplayerManager = multiplayerManager;
         _inputSystem = inputSystem;
         _bulletPool = bulletPool;
         _playerProvider = provider;
-        _serverConnector = connector;
+        _serverPlayerConnector = playerConnector;
     }
     
     public async void Initialize()
@@ -49,7 +49,7 @@ public class LevelEntryPoint : IInitializable
 
     public void Init()
     {
-        _serverConnector.Init();
+        _serverPlayerConnector.Init();
         _inputSystem.Initialize();
     }
 }

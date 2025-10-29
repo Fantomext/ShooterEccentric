@@ -18,7 +18,7 @@ public class LevelLifeTimeScope : LifetimeScope
         builder.Register<LevelAssetLoader>(Lifetime.Scoped);
         builder.Register<PlayerProvider>(Lifetime.Singleton);
         builder.RegisterComponentInHierarchy<MultiplayerManager>();
-        builder.Register<ServerConnector>(Lifetime.Singleton);
+        builder.Register<ServerPlayerConnector>(Lifetime.Singleton);
 
         builder.Register<GameObjectFactory<PlayerCharacter>>(Lifetime.Singleton);
         builder.Register<GameObjectFactory<EnemyController>>(Lifetime.Singleton);
