@@ -10,7 +10,6 @@ namespace _Game.Scripts.Gun
         [Inject] private BulletPool _bulletPool;
         
         [SerializeField] private Transform _bulletPoint;
-        [SerializeField] private float _bulletSpeed;
         [SerializeField] private float _delayBetweenShoots;
 
         private ShootInfo _shootInfo = new ShootInfo();
@@ -49,6 +48,7 @@ namespace _Game.Scripts.Gun
             _shootInfo.dZ = velocity.z;
 
             OnShootData?.Invoke(_shootInfo);
+            OnShoot?.Invoke();
         }
     }
 }
