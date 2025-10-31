@@ -29,8 +29,6 @@ export class Player extends Schema {
     @type("number")
     rY = 0;
 
-    @type("boolean")
-    sit = false;
 }
 
 export class State extends Schema {
@@ -68,9 +66,6 @@ export class State extends Schema {
         player.rX = data.rX;
         player.rY = data.rY;
 
-        //Crouching
-        player.sit = data.sit;
-
     }
 }
 
@@ -83,13 +78,19 @@ export class StateHandlerRoom extends Room<State> {
         this.setState(new State());
 
         this.onMessage("move", (client, data) => {
-            console.log("StateHandlerRoom received message from", client.sessionId, ":", data);
+            //console.log("StateHandlerRoom received message from", client.sessionId, ":", data);
             this.state.movePlayer(client.sessionId, data);
         });
 
         this.onMessage("shoot", (client, data) =>
         {
             this.broadcast("Shoot", data, { except : client});
+        })
+
+        this.onMessage("sit", (client, data) =>
+        {
+            console.log("What : ", data);
+            this.broadcast("Sit", data, { except : client});
         })
     }
 

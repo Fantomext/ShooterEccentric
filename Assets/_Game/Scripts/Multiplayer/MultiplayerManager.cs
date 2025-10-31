@@ -15,6 +15,8 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
     [Inject] private LevelAssetLoader _levelAssetLoader;
     
     private const string StateHandler = "state_handler";
+    private const string MessageShoot = "Shoot";
+    private const string MessageCrouch = "Sit";
     
     private EnemyController _enemy;
     private PlayerCharacter _player;
@@ -43,7 +45,16 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
         
 
         _room.OnStateChange += OnChange;
-        _room.OnMessage<string>("Shoot", ShootEvent);
+        _room.OnMessage<string>(MessageShoot, ShootEvent);
+        _room.OnMessage<string>(MessageCrouch, SitEvent);
+    }
+
+    private void SitEvent(string jsonSitData)
+    {
+        SitInfo data = JsonUtility.FromJson<SitInfo>(jsonSitData);
+
+        if (_players.TryGetValue(data.key, out var enemy))
+            enemy.Crouch(data.sit);
     }
 
     private void ShootEvent(string jsonShootInfo)

@@ -17,6 +17,7 @@ namespace _Game.Scripts.Multiplayer
 
         private const string ChangePosition = "move";
         private const string Shoot = "shoot";
+        private const string Crouch = "sit";
 
         private bool _playerIsCrouched;
 
@@ -45,9 +46,14 @@ namespace _Game.Scripts.Multiplayer
             _multiplayerManager.SendMessage(Shoot, jsonShoot);
         }
 
-        private void PlayerCrouch(bool isCrouching)
+        private void PlayerCrouch(bool isSit)
         {
-            _playerIsCrouched = isCrouching;
+            SitInfo sitInfo = new SitInfo();
+            sitInfo.key = _multiplayerManager.ReturnSessionId();
+            sitInfo.sit = isSit;
+            
+            string sitJson = JsonUtility.ToJson(sitInfo);
+            _multiplayerManager.SendMessage(Crouch, sitJson);
         }
         
         private void SendMessage(Vector3 position, Vector3 velocity, Vector2 rotation)
@@ -65,8 +71,6 @@ namespace _Game.Scripts.Multiplayer
                     
                     {"rX", rotation.x},
                     {"rY", rotation.y},
-                    
-                    {"sit", _playerIsCrouched}
                 };
             
             _multiplayerManager.SendMessage(ChangePosition, data);

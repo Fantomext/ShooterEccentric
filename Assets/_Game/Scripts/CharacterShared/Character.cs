@@ -29,12 +29,10 @@ namespace _Game.Scripts
 
         public void CrouchSet(bool crouch)
         {
-            
             if (crouch)
                 Crouch();
             else
                 UnCrouch();
-            
         }
 
         protected void Crouch()

@@ -90,10 +90,6 @@ namespace _Game.Scripts
                         _rotation.y = (float)dataChange.Value;
                         break;
                     
-                    case "sit":
-                        _character.CrouchSet((bool) dataChange.Value );
-                        break;
-
                     default:
                         Debug.LogWarning($"{dataChange.Field} is not a valid field");
                         break;
@@ -111,10 +107,10 @@ namespace _Game.Scripts
 
             OnShoot?.Invoke(position, velocty);
         }
-
+        
         public void Crouch(bool crouch)
         {
-            OnCrouch?.Invoke(crouch);
+            _character.CrouchSet(crouch);
         }
 
         private void OnDestroy()

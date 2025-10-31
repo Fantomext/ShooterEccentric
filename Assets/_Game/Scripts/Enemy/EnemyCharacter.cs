@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace _Game.Scripts
 {
@@ -7,11 +6,8 @@ namespace _Game.Scripts
     {
         [HideInInspector] public Vector3 TargetPosition = Vector3.zero;
         private float _velocityMagnitude = 0;
-
-        public void OnEnable()
-        {
-            
-        }
+        
+        private Vector3 _targetRotation = Vector3.zero;
 
         public void SetSpeed(float speed)
         {
@@ -31,6 +27,7 @@ namespace _Game.Scripts
             }
             
             OnSpeedChange();
+            Rotate();
         }
 
         public void SetMovement(in Vector3 position, in Vector3 velocity, in float averageTimeInterval)
@@ -40,11 +37,23 @@ namespace _Game.Scripts
             Velocity = velocity;
             _velocityMagnitude = velocity.magnitude;
         }
-
+        
+        public void Rotate()
+        {
+            if (_targetRotation.magnitude > 0)
+            {
+                _headTransform.localRotation = Quaternion.Lerp(_headTransform.localRotation, Quaternion.Euler(_targetRotation.x, _headTransform.localEulerAngles.y,_headTransform.localEulerAngles.z),  Time.deltaTime * 15);
+                transform.rotation = Quaternion.Lerp(transform.rotation,  Quaternion.Euler(transform.eulerAngles.x,_targetRotation.y,transform.eulerAngles.z),  Time.deltaTime * 15);
+            }
+        }
+        
         public void SetRotate(Vector2 rotation)
         {
-            _headTransform.localEulerAngles = new Vector3(rotation.x , 0, 0);
-            transform.eulerAngles = new Vector3(0f,rotation.y,0);
+            _targetRotation = rotation;
         }
+
+        
+
+        
     }
 }

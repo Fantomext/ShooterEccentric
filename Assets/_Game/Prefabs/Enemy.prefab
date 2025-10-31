@@ -126,7 +126,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CheckFly
   <IsGrounded>k__BackingField: 0
   _coyoteTime: 0
-  _raycastDistance: 0.5
+  _raycastDistance: 0.6
 --- !u!114 &8215300547019530657
 MonoBehaviour:
   m_ObjectHideFlags: 0
