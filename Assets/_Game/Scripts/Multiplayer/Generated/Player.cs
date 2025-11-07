@@ -18,7 +18,7 @@ public partial class Player : Schema {
 	public sbyte curHP = default(sbyte);
 
 	[Type(3, "uint8")]
-	public byte loss = default(byte);
+	public byte kills = default(byte);
 
 	[Type(4, "number")]
 	public float pX = default(float);

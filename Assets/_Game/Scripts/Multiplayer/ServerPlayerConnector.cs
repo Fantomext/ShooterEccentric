@@ -10,9 +10,10 @@ namespace _Game.Scripts.Multiplayer
 {
     public class ServerPlayerConnector : IDisposable
     {
-        private MultiplayerManager _multiplayerManager;
-        private PlayerProvider _playerProvider;
-        private EnemyPool _enemyPool;
+        private readonly ScoreManager _scoreManager;
+        private readonly MultiplayerManager _multiplayerManager;
+        private readonly PlayerProvider _playerProvider;
+        private readonly EnemyPool _enemyPool;
         
         private Player _player;
         
@@ -29,11 +30,12 @@ namespace _Game.Scripts.Multiplayer
         public event Action<EnemyCharacter> PlayerDie;
         
         [Inject]
-        public ServerPlayerConnector(MultiplayerManager multiplayerManager, PlayerProvider playerProvider, EnemyPool pool)
+        public ServerPlayerConnector(MultiplayerManager multiplayerManager, PlayerProvider playerProvider, EnemyPool pool, ScoreManager scoreManager)
         {
             _multiplayerManager = multiplayerManager;
             _playerProvider = playerProvider;
             _enemyPool = pool;
+            _scoreManager = scoreManager;
         }
 
         public void Init()
@@ -64,6 +66,11 @@ namespace _Game.Scripts.Multiplayer
                 {
                     case "curHP":
                         _health.SetCurrentHealth((sbyte) change.Value);
+                        break;
+                    
+                    case "kills":
+                        _scoreManager.UpdatePlayerKills((byte)change.Value);
+                        Debug.Log($"PlayerKills: {(byte)change.Value}");
                         break;
                 }
             }
@@ -121,6 +128,7 @@ namespace _Game.Scripts.Multiplayer
             _character.OnMove -= SendMessage;
             _playerGun.OnShootData -= SendShoot;
             _character.OnCrouch -= CharacterCrouch;
+            _player.OnChange -= OnChange;
         }
     }
 }

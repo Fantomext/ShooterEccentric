@@ -7,12 +7,11 @@ namespace _Game.Scripts
 {
     public class EnemyCharacter : Character
     {
-        
         [HideInInspector] public Vector3 TargetPosition = Vector3.zero;
         private float _velocityMagnitude = 0;
         
         private Vector3 _targetRotation = Vector3.zero;
-        
+
         public event Action<Dictionary<string, object>> OnTakeDamage;
 
         public void Init(string sessionID)

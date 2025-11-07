@@ -34,8 +34,6 @@ namespace _Game.Scripts
         {
             _currentHealth -= damage;
             
-            Debug.Log($"Damage: {damage}, Current Health: {_currentHealth}");
-            
             OnChangeHealth?.Invoke(_maxHealth,_currentHealth);
 
             if (_currentHealth < 0 )

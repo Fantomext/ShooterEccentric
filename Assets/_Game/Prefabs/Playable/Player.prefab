@@ -173,8 +173,6 @@ MonoBehaviour:
   <StayCenterCollider>k__BackingField: {x: 0, y: 1, z: 0}
   <CrouchCenterCollider>k__BackingField: {x: 0, y: 0.73, z: 0}
   <Velocity>k__BackingField: {x: 0, y: 0, z: 0}
-  <SessionID>k__BackingField: 
-  <Speed>k__BackingField: 2
   _health: {fileID: 1031190929517818496}
   _rigidbody: {fileID: 2734417455291172734}
   _checkFly: {fileID: 6752306092806579094}

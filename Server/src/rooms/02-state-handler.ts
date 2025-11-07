@@ -12,7 +12,7 @@ export class Player extends Schema {
     curHP = 0;
 
     @type("uint8")
-    loss = 0;
+    kills = 0;
 
     @type("number")
     pX = Math.floor(Math.random() * 50) - 25;
@@ -118,7 +118,6 @@ export class StateHandlerRoom extends Room<State> {
                 return;
             }
 
-            player.loss++;
             player.curHP = player.maxHP;
 
             for (var i = 0; i < this.clients.length; i++)
@@ -130,6 +129,8 @@ export class StateHandlerRoom extends Room<State> {
                 const z = Math.floor(Math.random() * 50) - 25;
                 const killer = data.enId;
                 const msg = JSON.stringify({x,z, killer});
+
+                this.state.players.get(killer).kills++;
 
                 this.clients[i].send("Restart", msg);
                 console.log(client.id)

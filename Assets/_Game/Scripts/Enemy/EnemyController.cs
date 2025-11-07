@@ -16,6 +16,7 @@ namespace _Game.Scripts
         Vector2 _rotation = Vector2.zero;
 
         public event Action<Vector3, Vector3, string> OnShoot;
+        public event Action<int> OnUpdateKill;
         public event Action<bool> OnCrouch;
 
         private float AverageTimeInterval
@@ -91,6 +92,15 @@ namespace _Game.Scripts
 
                     case "rY":
                         _rotation.y = (float)dataChange.Value;
+                        break;
+                    
+                    case "kills":
+                        if ((byte)dataChange.PreviousValue < (byte)dataChange.Value)
+                        {
+                            OnUpdateKill?.Invoke((byte)dataChange.Value);
+                            Debug.Log($"EnemyKills: {dataChange.Value}");
+                        }
+                        
                         break;
                     
                     case "curHP":

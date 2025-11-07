@@ -23,6 +23,7 @@ public class LevelLifeTimeScope : LifetimeScope
         builder.Register<PlayerProvider>(Lifetime.Singleton);
         builder.Register<UIProvider>(Lifetime.Singleton);
         builder.Register<EnemyPool>(Lifetime.Singleton);
+        builder.Register<ScoreManager>(Lifetime.Singleton);
         
         builder.RegisterComponentInHierarchy<MultiplayerManager>();
         builder.Register<ServerPlayerConnector>(Lifetime.Singleton);
