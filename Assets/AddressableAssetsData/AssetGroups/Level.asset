@@ -18,17 +18,26 @@ MonoBehaviour:
   - m_GUID: 53094cdcbe7ed3846b3d500062f934cb
     m_Address: Enemy
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - default
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5a89030b57030e444b551a38ffff14a8
     m_Address: Player
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - default
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 82ed5b33731adf64ab8e9450575094b6
+    m_Address: playerHP
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - default
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d6f5a753cf675864191ba66eecbf4a21
     m_Address: Bullet
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - default
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 291548849ae94f8419e59998dfd8fc49, type: 2}

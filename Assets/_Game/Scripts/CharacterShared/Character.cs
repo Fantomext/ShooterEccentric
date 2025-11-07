@@ -1,4 +1,5 @@
 ﻿using System;
+using _Game.Scripts.Multiplayer;
 using UnityEngine;
 
 namespace _Game.Scripts
@@ -7,14 +8,19 @@ namespace _Game.Scripts
     {
         [field: SerializeField] protected Transform _headTransform; 
         [field: SerializeField] protected CapsuleCollider _collider; 
+        [field: SerializeField] protected ModelVisualParts _visualParts; 
         
-        [field : SerializeField] public float Speed { get; protected set; }
         [field : SerializeField] public float StayHeight { get; protected set; }
         [field : SerializeField] public float CrouchHeight { get; protected set; }
         [field : SerializeField] public Vector3 StayCenterCollider { get; protected set; }
         [field : SerializeField] public Vector3 CrouchCenterCollider { get; protected set; }
         [field : SerializeField] public Vector3 Velocity { get; protected set; }
-        
+        public string SessionID { get; set; }
+        public int MaxHealth { get; protected set; }
+        public float Speed { get; set; }
+
+        [SerializeField] protected Health _health;
+
         public event Action<float> OnSpeed;
         public event Action<bool> OnCrouch;
 
@@ -48,5 +54,6 @@ namespace _Game.Scripts
             _collider.center = StayCenterCollider;
             OnCrouch?.Invoke(false);
         }
+
     }
 }

@@ -106,5 +106,14 @@ namespace _Game.Scripts
             OnMove?.Invoke(_playerInput.Player.Move.ReadValue<Vector2>());
         }
 
+        public void BlockInput()
+        {
+            _playerInput.Disable();
+        }
+
+        public void UnblockInput()
+        {
+            _playerInput.Enable();
+        }
     }
 }

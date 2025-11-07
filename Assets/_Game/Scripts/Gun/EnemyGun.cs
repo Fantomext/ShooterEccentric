@@ -18,11 +18,11 @@ public class EnemyGun : Gun
         _character.OnShoot -= Shoot;
     }
 
-    public void Shoot(Vector3 position, Vector3 velocity)
+    public void Shoot(Vector3 position, Vector3 velocity, string id)
     { 
         var newBullet = _bulletPool.TakeBullet();
         newBullet.transform.position = position;
-        newBullet.Init(velocity);
+        newBullet.Init(velocity, id);
 
         OnShoot?.Invoke();
     }

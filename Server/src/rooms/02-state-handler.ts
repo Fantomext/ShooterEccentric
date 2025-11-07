@@ -5,6 +5,15 @@ export class Player extends Schema {
     @type("number")
     speed = 0;
 
+    @type("int8")
+    maxHP = 0;
+
+    @type("int8")
+    curHP = 0;
+
+    @type("uint8")
+    loss = 0;
+
     @type("number")
     pX = Math.floor(Math.random() * 50) - 25;
 
@@ -40,6 +49,11 @@ export class State extends Schema {
     createPlayer(sessionId: string, data : any) {
         const player = new Player();
         player.speed = data.speed;
+
+        player.maxHP = data.hp;
+        player.curHP = data.hp;
+
+        console.log(sessionId);
 
         this.players.set(sessionId, player);
     }
@@ -89,9 +103,40 @@ export class StateHandlerRoom extends Room<State> {
 
         this.onMessage("sit", (client, data) =>
         {
-            console.log("What : ", data);
             this.broadcast("Sit", data, { except : client});
         })
+
+        this.onMessage("damage", (client, data) =>
+        {
+            const clientID = data.id;
+            const player = this.state.players.get(clientID);
+
+            let hp = player.curHP -= data.value;
+
+            if (hp > 0){
+                player.curHP = hp;
+                return;
+            }
+
+            player.loss++;
+            player.curHP = player.maxHP;
+
+            for (var i = 0; i < this.clients.length; i++)
+            {
+                if (this.clients[i].id != clientID)
+                    continue;
+
+                const x = Math.floor(Math.random() * 50) - 25;
+                const z = Math.floor(Math.random() * 50) - 25;
+                const killer = data.enId;
+                const msg = JSON.stringify({x,z, killer});
+
+                this.clients[i].send("Restart", msg);
+                console.log(client.id)
+                this.broadcast("Death", this.clients[i].id, { except :  this.clients[i]});
+            };
+
+        });
     }
 
     onAuth(client, options, req) {

@@ -6,7 +6,7 @@ namespace _Game.Scripts.Gun
 {
     public abstract class Gun : MonoBehaviour
     {
-        [FormerlySerializedAs("_speed")] [SerializeField] protected float _bulletSpeed;
+        [SerializeField] protected float _bulletSpeed;
         public Action OnShoot;
     }
 }

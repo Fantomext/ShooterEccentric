@@ -9,12 +9,16 @@ namespace _Game.Scripts
     {
         [SerializeField] private float _lifeTime = 3f;
         [SerializeField] private Rigidbody _rigidbody;
+        private int _damage;
+        private string _playerId;
         
         public event Action<Bullet> OnRelease;
 
-        public void Init(Vector3 velocity)
+        public void Init(Vector3 velocity, string playerId = null, int dmg = 0)
         {
-            _rigidbody.linearVelocity = velocity ;
+            _rigidbody.linearVelocity = velocity;
+            _damage = dmg;
+            _playerId = playerId;
             DelayDestroy().Forget();
         }
 
@@ -31,6 +35,9 @@ namespace _Game.Scripts
 
         private void OnCollisionEnter(Collision other)
         {
+            if (other.gameObject.TryGetComponent(out EnemyCharacter health))
+                health.TakeDamage(_damage, _playerId);
+            
             Release();
         }
     }

@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using _Game.Scripts;
 using _Game.Scripts.AssetLoader;
-using _Game.Scripts.Factory;
+using _Game.Scripts.Configs;
 using _Game.Scripts.Providers;
+using _Game.Scripts.Spawners;
 using Colyseus;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -11,12 +13,15 @@ using VContainer;
 public class MultiplayerManager : ColyseusManager<MultiplayerManager>
 {
     [Inject] private PlayerProvider _playerProvider;
-    [Inject] private GameObjectFactory<EnemyController> _enemyFactory;
+    [Inject] private EnemySpawner _enemySpawner;
     [Inject] private LevelAssetLoader _levelAssetLoader;
+    [Inject] private PlayerConfig _playerConfig;
     
     private const string StateHandler = "state_handler";
     private const string MessageShoot = "Shoot";
     private const string MessageCrouch = "Sit";
+    private const string MessageRestart = "Restart";
+    private const string MessageDeath = "Death";
     
     private EnemyController _enemy;
     private PlayerCharacter _player;
@@ -25,6 +30,8 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
     
     private ColyseusRoom<State> _room;
 
+    public event Action<Player> OnPlayerCreate;
+    public event Action<string> OnPlayerRestart;
     public async UniTask Init()
     {
         InitializeClient();
@@ -38,15 +45,32 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
         
         Dictionary<string, object> data = new Dictionary<string, object>()
         {
-            {"speed", _player.Speed}
+            {"speed", _playerConfig.Speed},
+            {"hp", _playerConfig.MaxHealth},
         };
         
         _room = await client.JoinOrCreate<State>(StateHandler, data);
         
 
+        _playerProvider.SetSessionID(ReturnSessionId());
+
         _room.OnStateChange += OnChange;
+        
         _room.OnMessage<string>(MessageShoot, ShootEvent);
         _room.OnMessage<string>(MessageCrouch, SitEvent);
+        _room.OnMessage<string>(MessageRestart, Restart);
+        _room.OnMessage<string>(MessageDeath, Death);
+    }
+
+    private void Death(string key)
+    {
+        if (_players.TryGetValue(key, out var enemy))
+            enemy.Restart();
+    }
+
+    private void Restart(string jsonData)
+    {
+        OnPlayerRestart?.Invoke(jsonData);
     }
 
     private void SitEvent(string jsonSitData)
@@ -55,6 +79,11 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
 
         if (_players.TryGetValue(data.key, out var enemy))
             enemy.Crouch(data.sit);
+    }
+
+    private void DeathEvent(string jsonDeathData)
+    {
+        
     }
 
     private void ShootEvent(string jsonShootInfo)
@@ -84,7 +113,9 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
 
     private void CreatePlayer(Player player)
     {
-        _player.transform.position = new Vector3(player.pX , player.pY, player.pZ );
+        _player.transform.position = new Vector3(player.pX , player.pY, player.pZ);
+        
+        OnPlayerCreate?.Invoke(player);
     }
 
     private void CreateEnemy(string key , Player player)
@@ -94,8 +125,9 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
         
         Vector3 position = new Vector3(player.pX , player.pY, player.pZ );
 
-        EnemyController enemy = _enemyFactory.Create(_enemy, position, Quaternion.identity);
-        enemy.Init(player);
+        EnemyController enemy = _enemySpawner.Spawn(_enemy, position, Quaternion.identity);
+        enemy.gameObject.SetActive(true);
+        enemy.Init(key, player);
         _players.Add(key, enemy);
     }
 

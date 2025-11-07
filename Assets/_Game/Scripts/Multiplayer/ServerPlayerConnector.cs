@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using _Game.Scripts.Gun;
 using _Game.Scripts.Providers;
+using Colyseus.Schema;
 using UnityEngine;
 using VContainer;
 
@@ -11,9 +12,13 @@ namespace _Game.Scripts.Multiplayer
     {
         private MultiplayerManager _multiplayerManager;
         private PlayerProvider _playerProvider;
+        private EnemyPool _enemyPool;
         
-        private PlayerCharacter _player;
+        private Player _player;
+        
+        private PlayerCharacter _character;
         private PlayerGun _playerGun;
+        private Health _health;
 
         private const string ChangePosition = "move";
         private const string Shoot = "shoot";
@@ -21,23 +26,50 @@ namespace _Game.Scripts.Multiplayer
 
         private bool _playerIsCrouched;
 
+        public event Action<EnemyCharacter> PlayerDie;
+        
         [Inject]
-        public ServerPlayerConnector(MultiplayerManager multiplayerManager, PlayerProvider playerProvider)
+        public ServerPlayerConnector(MultiplayerManager multiplayerManager, PlayerProvider playerProvider, EnemyPool pool)
         {
             _multiplayerManager = multiplayerManager;
             _playerProvider = playerProvider;
+            _enemyPool = pool;
         }
 
         public void Init()
         {
-            _player = _playerProvider.GetCharacter();
+            _character = _playerProvider.GetCharacter();
             _playerGun = _playerProvider.GetGun();
+            _health = _playerProvider.GetHealth();
             
-            _player.OnMove += SendMessage;
+            _character.OnMove += SendMessage;
             _playerGun.OnShootData += SendShoot;
-            _player.OnCrouch += PlayerCrouch;
+            _character.OnCrouch += CharacterCrouch;
+            _multiplayerManager.OnPlayerCreate += PlayerCreated;
+            _multiplayerManager.OnPlayerRestart += Restart;
         }
-        
+
+        private void PlayerCreated(Player player)
+        {
+            _player = player;
+            
+            _player.OnChange += OnChange;
+        }
+
+        private void OnChange(List<DataChange> changes)
+        {
+            foreach (var change in changes)
+            {
+                switch (change.Field)
+                {
+                    case "curHP":
+                        _health.SetCurrentHealth((sbyte) change.Value);
+                        break;
+                }
+            }
+            
+        }
+
         private void SendShoot(ShootInfo shootInfo)
         {
             shootInfo.key = _multiplayerManager.ReturnSessionId();
@@ -46,7 +78,7 @@ namespace _Game.Scripts.Multiplayer
             _multiplayerManager.SendMessage(Shoot, jsonShoot);
         }
 
-        private void PlayerCrouch(bool isSit)
+        private void CharacterCrouch(bool isSit)
         {
             SitInfo sitInfo = new SitInfo();
             sitInfo.key = _multiplayerManager.ReturnSessionId();
@@ -76,11 +108,19 @@ namespace _Game.Scripts.Multiplayer
             _multiplayerManager.SendMessage(ChangePosition, data);
         }
 
+        private void Restart(string jsonData)
+        {
+            var data = JsonUtility.FromJson<RestartInfo>(jsonData);
+            var enemy = _enemyPool.GetEnemy(data.killer);
+
+            _character.Restart(data, enemy);
+        }
+
         public void Dispose()
         {
-            _player.OnMove -= SendMessage;
+            _character.OnMove -= SendMessage;
             _playerGun.OnShootData -= SendShoot;
-            _player.OnCrouch -= PlayerCrouch;
+            _character.OnCrouch -= CharacterCrouch;
         }
     }
 }

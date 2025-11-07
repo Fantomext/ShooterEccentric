@@ -1,5 +1,6 @@
 ﻿using System;
 using _Game.Scripts.AssetLoader;
+using _Game.Scripts.Configs;
 using _Game.Scripts.Factory;
 using _Game.Scripts.Gun;
 using Cysharp.Threading.Tasks;
@@ -11,9 +12,11 @@ namespace _Game.Scripts.Providers
     {
         [Inject] private GameObjectFactory<PlayerCharacter> _playerFactory;
         [Inject] private LevelAssetLoader _levelAssetLoader;
+        [Inject] private PlayerConfig _playerConfig;
         
         private PlayerCharacter _player;
         private PlayerGun _playerGun;
+        private Health _health;
 
         public event Action<PlayerCharacter> OnPlayerCreate;
         
@@ -23,8 +26,18 @@ namespace _Game.Scripts.Providers
             
             _player = _playerFactory.Create(prefab);
             _playerGun = _player.GetComponent<PlayerGun>();
+            _health = _player.GetComponent<Health>();
+            
+            _player.Speed = _playerConfig.Speed;
+            _health.SetMax(_playerConfig.MaxHealth);
             
             OnPlayerCreate?.Invoke(_player);
+        }
+
+        public void SetSessionID(string sessionID)
+        {
+            _player.SessionID = sessionID;
+            _playerGun.SetID(sessionID);
         }
 
         public PlayerCharacter GetCharacter()
@@ -35,6 +48,11 @@ namespace _Game.Scripts.Providers
         public PlayerGun GetGun()
         { 
             return _playerGun;
+        }
+
+        public Health GetHealth()
+        {
+            return _health;
         }
     }
 }

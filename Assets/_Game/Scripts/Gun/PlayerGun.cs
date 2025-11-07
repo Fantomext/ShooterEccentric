@@ -11,9 +11,11 @@ namespace _Game.Scripts.Gun
         
         [SerializeField] private Transform _bulletPoint;
         [SerializeField] private float _delayBetweenShoots;
+        [SerializeField] private int _damage;
 
         private ShootInfo _shootInfo = new ShootInfo();
         
+        private string _playerId;
         private float _currentIntervalBetweenShoots;
 
         public event Action<ShootInfo> OnShootData;
@@ -30,14 +32,14 @@ namespace _Game.Scripts.Gun
             if (_delayBetweenShoots > Time.time - _currentIntervalBetweenShoots)
                 return;
             
+            _currentIntervalBetweenShoots = Time.time;
+            
             Vector3 position = _bulletPoint.position;
             Vector3 velocity = _bulletPoint.forward * _bulletSpeed;
             
             Bullet newBullet = _bulletPool.TakeBullet();
             newBullet.transform.position = position;
-            newBullet.Init(velocity);
-            
-            _currentIntervalBetweenShoots = Time.time;
+            newBullet.Init(velocity, _playerId, _damage);
                 
             _shootInfo.pX = position.x;
             _shootInfo.pY = position.y;
@@ -49,6 +51,11 @@ namespace _Game.Scripts.Gun
 
             OnShootData?.Invoke(_shootInfo);
             OnShoot?.Invoke();
+        }
+
+        public void SetID(string sessionID)
+        {
+            _playerId = sessionID;
         }
     }
 }

@@ -78,6 +78,8 @@ GameObject:
   - component: {fileID: 1039810230251794345}
   - component: {fileID: 5347464826325337124}
   - component: {fileID: 4874598635000828069}
+  - component: {fileID: 1031190929517818496}
+  - component: {fileID: 5020825777377248388}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -165,12 +167,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _headTransform: {fileID: 6140360344967420902}
   _collider: {fileID: 1086838622681210718}
-  <Speed>k__BackingField: 2
+  _visualParts: {fileID: 5020825777377248388}
   <StayHeight>k__BackingField: 2
   <CrouchHeight>k__BackingField: 1.3
   <StayCenterCollider>k__BackingField: {x: 0, y: 1, z: 0}
   <CrouchCenterCollider>k__BackingField: {x: 0, y: 0.73, z: 0}
   <Velocity>k__BackingField: {x: 0, y: 0, z: 0}
+  <SessionID>k__BackingField: 
+  <Speed>k__BackingField: 2
+  _health: {fileID: 1031190929517818496}
   _rigidbody: {fileID: 2734417455291172734}
   _checkFly: {fileID: 6752306092806579094}
   _cameraPoint: {fileID: 2067904534735496071}
@@ -224,6 +229,7 @@ MonoBehaviour:
   _bulletSpeed: 15
   _bulletPoint: {fileID: 9160736684983117598}
   _delayBetweenShoots: 0.3
+  _damage: 1
 --- !u!114 &4874598635000828069
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -238,6 +244,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::_Game.Scripts.Gun.GunAnimations
   _animator: {fileID: 55985791986355612}
   _playerGun: {fileID: 5347464826325337124}
+--- !u!114 &1031190929517818496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2435870349308710398}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c47ec2f409154bf79ed2bf7c1985f91e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::_Game.Scripts.Health
+--- !u!114 &5020825777377248388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2435870349308710398}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54513085a4f5ceb4c989b73721a2e8d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ModelVisualParts
+  _modelParts:
+  - {fileID: 3506716169672153830}
+  - {fileID: 5774864246238816521}
+  - {fileID: 4871824796099303803}
+  - {fileID: 7335110423452948540}
 --- !u!1001 &16577701827010907
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -265,6 +300,10 @@ PrefabInstance:
     - target: {fileID: 3207120230412455351, guid: 5b9e5150db7b2204d98b5f69a683d1e6, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3499506445177207741, guid: 5b9e5150db7b2204d98b5f69a683d1e6, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3783090178872861316, guid: 5b9e5150db7b2204d98b5f69a683d1e6, type: 3}
       propertyPath: m_Name
@@ -350,6 +389,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 55985791986355612}
   m_SourcePrefab: {fileID: 100100000, guid: 5b9e5150db7b2204d98b5f69a683d1e6, type: 3}
+--- !u!1 &3506716169672153830 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3499506445177207741, guid: 5b9e5150db7b2204d98b5f69a683d1e6, type: 3}
+  m_PrefabInstance: {fileID: 16577701827010907}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &3799588025695667167 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3783090178872861316, guid: 5b9e5150db7b2204d98b5f69a683d1e6, type: 3}
@@ -439,5 +483,10 @@ Animator:
 --- !u!4 &6140360344967420902 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6128295628213254845, guid: 5b9e5150db7b2204d98b5f69a683d1e6, type: 3}
+  m_PrefabInstance: {fileID: 16577701827010907}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7335110423452948540 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7345768215894227303, guid: 5b9e5150db7b2204d98b5f69a683d1e6, type: 3}
   m_PrefabInstance: {fileID: 16577701827010907}
   m_PrefabAsset: {fileID: 0}

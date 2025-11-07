@@ -2,6 +2,7 @@
   "dependencies": {
     "com.seaeees.simple-folder-icon": "https://github.com/SeaeeesSan/SimpleFolderIcon.git?path=Packages/com.seaeees.simple-folder-icon",
     "com.smkplus.custom-toolbar": "https://github.com/smkplus/CustomToolbar.git#master",
+    "com.unity.2d.sprite": "1.0.0",
     "com.unity.addressables": "2.7.4",
     "com.unity.cinemachine": "3.1.5",
     "com.unity.feature.development": "1.0.2",

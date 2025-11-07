@@ -15,7 +15,7 @@ namespace _Game.Scripts
 
         Vector2 _rotation = Vector2.zero;
 
-        public event Action<Vector3, Vector3> OnShoot;
+        public event Action<Vector3, Vector3, string> OnShoot;
         public event Action<bool> OnCrouch;
 
         private float AverageTimeInterval
@@ -31,11 +31,14 @@ namespace _Game.Scripts
             }
         }
 
-        public void Init(Player player)
+        public void Init(string sessiondID, Player player)
         {
+            _character.Init(sessiondID);
+            
             _player = player;
             _player.OnChange += OnChange;
-            _character.SetSpeed(_player.speed);
+            _character.SetSpeed(player.speed);
+            _character.SetMaxHealth(player.maxHP);
         }
 
         private void SaveReceiveTime()
@@ -90,6 +93,12 @@ namespace _Game.Scripts
                         _rotation.y = (float)dataChange.Value;
                         break;
                     
+                    case "curHP":
+                        if ((sbyte)dataChange.PreviousValue < (sbyte)dataChange.Value)
+                            _character.RestoreHP((sbyte) dataChange.Value);
+                        
+                        break;
+
                     default:
                         Debug.LogWarning($"{dataChange.Field} is not a valid field");
                         break;
@@ -105,7 +114,7 @@ namespace _Game.Scripts
             Vector3 position = new Vector3(info.pX, info.pY, info.pZ);
             Vector3 velocty = new Vector3(info.dX, info.dY, info.dZ);
 
-            OnShoot?.Invoke(position, velocty);
+            OnShoot?.Invoke(position, velocty, info.key);
         }
         
         public void Crouch(bool crouch)
@@ -116,6 +125,11 @@ namespace _Game.Scripts
         private void OnDestroy()
         { 
             _player.OnChange -= OnChange;
+        }
+
+        public void Restart()
+        {
+            _character.Restart();
         }
     }
 }
