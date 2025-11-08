@@ -50,7 +50,7 @@ namespace _Game.Scripts.Gun.StateMachine
             for (int i = 0; i < 6; i++)
             {
                 Vector3 position = _bulletPoint.position;
-                Vector3 velocity = (_bulletPoint.forward + _bulletPoint.right * Random.Range(-0.1f,0.1f) + _bulletPoint.up * Random.Range(-0.1f,0.1f))  * _speedProjectile;
+                Vector3 velocity = (_bulletPoint.forward + _bulletPoint.right * Random.Range(-0.05f,0.05f) + _bulletPoint.up * Random.Range(-0.05f,0.05f))  * _speedProjectile;
             
                 Fireball newBullet = _bulletPool.TakeFireball();
                 newBullet.transform.position = position;

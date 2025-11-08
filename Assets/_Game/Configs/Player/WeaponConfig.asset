@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68454e59ae464a8d86fc8340292ee0b7, type: 3}
   m_Name: WeaponConfig
   m_EditorClassIdentifier: Assembly-CSharp::_Game.Scripts.Gun.WeaponConfig
-  DelayBetweenShootsRifle: 0.1
-  SpeedRifle: 15
-  DamageRifle: 5
+  DelayBetweenShootsRifle: 0.25
+  SpeedRifle: 12
+  DamageRifle: 1
   DelayBetweenShootsMagicWand: 1
-  SpeedMagicWand: 15
-  DamageWand: 2
+  SpeedMagicWand: 17
+  DamageWand: 1

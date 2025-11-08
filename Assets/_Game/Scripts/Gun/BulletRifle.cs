@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace _Game.Scripts.Gun
 {
@@ -7,6 +8,13 @@ namespace _Game.Scripts.Gun
         public override void Release()
         {
             OnRelease?.Invoke(this);
+        }
+
+        protected override void OnCollisionEnter(Collision other)
+        {
+            base.OnCollisionEnter(other);
+            
+            Release();
         }
 
         public event Action<BulletRifle> OnRelease;

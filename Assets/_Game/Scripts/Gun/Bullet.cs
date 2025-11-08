@@ -35,7 +35,6 @@ namespace _Game.Scripts
                 health.TakeDamage(_damage, _playerId);
             
             _cts?.Cancel();
-            Release();
         }
         public virtual void Release()
         {

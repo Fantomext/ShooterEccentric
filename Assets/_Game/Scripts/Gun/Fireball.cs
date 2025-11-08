@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace _Game.Scripts.Gun
 {
@@ -8,7 +9,17 @@ namespace _Game.Scripts.Gun
         {
             OnRelease?.Invoke(this);
         }
+        
+        protected virtual void OnCollisionEnter(Collision other)
+        {
+            if (other.gameObject.TryGetComponent(out EnemyCharacter health))
+            {
+                health.TakeDamage(_damage, _playerId);
+                _cts?.Cancel();
+            }
+        }
 
+       
         public event Action<Fireball> OnRelease;
     }
 }
