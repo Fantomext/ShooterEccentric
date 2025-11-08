@@ -16,8 +16,8 @@
 
 Добавил их смену на цифры 1, 2 GunState.cs, RifleWeapon.cs, MagicWand.cs
 
--   **Добавил коннекторы для Player and Enemy **
--   **SpawnPointManager cоздан для телепорта игроков **
+-   **Добавил коннекторы для Player and Enemy**
+-   **SpawnPointManager cоздан для телепорта игроков**
   
 p.s. Было лень выпиливать координаты, которые игра в начале присылает и во время Reseta. Но похорошему их убрать =)
 
