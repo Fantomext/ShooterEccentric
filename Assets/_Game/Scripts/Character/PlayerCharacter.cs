@@ -24,7 +24,6 @@ public class PlayerCharacter : Character
     private Vector3 _mouseDirection;
 
     private float _lastJumpTime;
-    private bool _pause;
     
     public event Action<Vector3, Vector3, Vector2> OnMove;
 
@@ -130,9 +129,8 @@ public class PlayerCharacter : Character
        _headTransform.transform.localEulerAngles = new Vector3(eueler.x, eueler.y,eueler.z);
     }
     
-    
 
-    public async void Restart(RestartInfo data, EnemyCharacter enemy)
+    public async void Restart(Vector3 position, EnemyCharacter enemy)
     {
         _camera.ShowDeathCamera(enemy.transform);
         _visualParts.HideModel();
@@ -140,16 +138,12 @@ public class PlayerCharacter : Character
         
         ChangeDirection(Vector3.zero);
         CameraChangeDirection(Vector3.zero);
-
-        _pause = true;
         
         _rigidbody.linearVelocity = Vector3.zero;
         _rigidbody.angularVelocity = Vector3.zero;
-        await _rigidbody.DOMove(new Vector3(data.x, 0, data.z), 2.5f).AsyncWaitForCompletion();
+        await _rigidbody.DOMove(new Vector3(position.x, position.y, position.z), 2.5f).AsyncWaitForCompletion();
 
-        OnMove?.Invoke(new Vector3(data.x, 0f, data.z), Vector3.one, Vector2.zero);
-        
-        _pause = false;
+        OnMove?.Invoke(new Vector3(position.x, position.y, position.z), Vector3.one, Vector2.zero);
         
         await _camera.HideDeathCamera();
         _inputSystem.UnblockInput();

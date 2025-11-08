@@ -1,4 +1,6 @@
 ﻿using System;
+using _Game.Scripts.Gun.StateMachine;
+using _Game.Scripts.Gun.StateMachine.Enum;
 using UnityEngine;
 using VContainer;
 
@@ -8,54 +10,77 @@ namespace _Game.Scripts.Gun
     {
         [Inject] private InputSystem _inputSystem;
         [Inject] private BulletPool _bulletPool;
+        [Inject] private WeaponConfig _config;
         
         [SerializeField] private Transform _bulletPoint;
         [SerializeField] private float _delayBetweenShoots;
-        [SerializeField] private int _damage;
-
-        private ShootInfo _shootInfo = new ShootInfo();
         
-        private string _playerId;
-        private float _currentIntervalBetweenShoots;
+        private GunState _gun;
+        
+        public string PlayerId { get; set; }
 
         public event Action<ShootInfo> OnShootData;
+        
+
+        public void SetId(string id)
+        {
+            PlayerId = id;
+            _gun = new GunState(this, _bulletPool, _config);
+            ChangeWeapon(WeaponCollection.Rifle);
+        }
+
+        private void OnEnable()
+        {
+            _inputSystem.OnChooseWeapon += ChangeWeapon;
+            
+        }
+
+        private void OnDisable()
+        {
+            _inputSystem.OnChooseWeapon -= ChangeWeapon;
+        }
 
         private void Update()
         {
             if (_inputSystem.IsShoot)
-                TryShootStart();
+                _gun.TryShoot();
                 
         }
 
-        public void TryShootStart()
+        public void ShootSuccess(ShootInfo info)
         {
-            if (_delayBetweenShoots > Time.time - _currentIntervalBetweenShoots)
-                return;
-            
-            _currentIntervalBetweenShoots = Time.time;
-            
-            Vector3 position = _bulletPoint.position;
-            Vector3 velocity = _bulletPoint.forward * _bulletSpeed;
-            
-            Bullet newBullet = _bulletPool.TakeBullet();
-            newBullet.transform.position = position;
-            newBullet.Init(velocity, _playerId, _damage);
-                
-            _shootInfo.pX = position.x;
-            _shootInfo.pY = position.y;
-            _shootInfo.pZ = position.z;
-        
-            _shootInfo.dX = velocity.x;
-            _shootInfo.dY = velocity.y;
-            _shootInfo.dZ = velocity.z;
-
-            OnShootData?.Invoke(_shootInfo);
+            info.key = PlayerId;
+            OnShootData?.Invoke(info);
             OnShoot?.Invoke();
         }
 
-        public void SetID(string sessionID)
+        public Transform GetBulletPoint()
         {
-            _playerId = sessionID;
+            return _bulletPoint;
         }
+
+        public void ChangeWeapon(WeaponCollection weaponCollection)
+        {
+            foreach (var VARIABLE in _weaponsVisual)
+                VARIABLE.Value.SetActive(false);
+            
+            
+            switch (weaponCollection)
+            {
+                case WeaponCollection.Rifle:
+                    _gun.SwitchWeapon(WeaponCollection.Rifle);
+                    _weaponsVisual[WeaponCollection.Rifle].SetActive(true);
+                    OnChangeWeapon?.Invoke(WeaponCollection.Rifle);
+
+                    break;
+                case WeaponCollection.MagicWand:
+                    _gun.SwitchWeapon(WeaponCollection.MagicWand);
+                    _weaponsVisual[WeaponCollection.MagicWand].SetActive(true);
+                    OnChangeWeapon?.Invoke(WeaponCollection.MagicWand);
+                    break;
+            }
+            
+        }
+
     }
 }

@@ -27,6 +27,11 @@ MonoBehaviour:
     m_SerializedLabels:
     - default
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7c182b7099e6de24c9b1a4aae506e351
+    m_Address: Fireball
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 82ed5b33731adf64ab8e9450575094b6
     m_Address: playerHP
     m_ReadOnly: 0

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using _Game.Scripts;
 using _Game.Scripts.AssetLoader;
 using _Game.Scripts.Configs;
+using _Game.Scripts.Info;
 using _Game.Scripts.Providers;
 using _Game.Scripts.Spawners;
 using Colyseus;
@@ -22,6 +23,8 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
     private const string MessageCrouch = "Sit";
     private const string MessageRestart = "Restart";
     private const string MessageDeath = "Death";
+    private const string MessageWin = "Win";
+    private const string MessageSwap = "Swap";
     
     private EnemyController _enemy;
     private PlayerCharacter _player;
@@ -32,6 +35,7 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
 
     public event Action<Player> OnPlayerCreate;
     public event Action<string> OnPlayerRestart;
+    public event Action<bool> OnGameEnd;
     public async UniTask Init()
     {
         InitializeClient();
@@ -60,6 +64,18 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
         _room.OnMessage<string>(MessageCrouch, SitEvent);
         _room.OnMessage<string>(MessageRestart, Restart);
         _room.OnMessage<string>(MessageDeath, Death);
+        _room.OnMessage<string>(MessageSwap, SwapWeapon);
+        _room.OnMessage<bool>(MessageWin, WinGame);
+    }
+
+    private void SwapWeapon(string dataSwap)
+    {
+        SwapInfo data = JsonUtility.FromJson<SwapInfo>(dataSwap);
+
+        if (_players.TryGetValue(data.id, out var enemyController))
+        {
+            enemyController.SwapWeapon(data.weapon);
+        }
     }
 
     private void Death(string key)
@@ -81,9 +97,11 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
             enemy.Crouch(data.sit);
     }
 
-    private void DeathEvent(string jsonDeathData)
+    public async void WinGame(bool isWin)
     {
-        
+        OnGameEnd?.Invoke(isWin);
+        await UniTask.WaitForSeconds(3f);
+        Application.Quit();
     }
 
     private void ShootEvent(string jsonShootInfo)

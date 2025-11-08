@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using _Game.Scripts.Gun.StateMachine.Enum;
+using _Game.Scripts.Info;
 using Colyseus.Schema;
 using UnityEngine;
 
@@ -8,6 +10,8 @@ namespace _Game.Scripts
     public class EnemyController : MonoBehaviour
     {
         [SerializeField] private EnemyCharacter _character;
+        [SerializeField] private EnemyGun _gun;
+        [SerializeField] private EnemyVisual _enemyVisual;
 
         private Player _player;
         private List<float> _timeInterval = new List<float>() { 0, 0, 0, 0, 0 };
@@ -36,6 +40,9 @@ namespace _Game.Scripts
         {
             _character.Init(sessiondID);
             
+            ColorInfo color = JsonUtility.FromJson<ColorInfo>(player.color);
+            
+            _enemyVisual.SetColor(new Color(color.colorR / 255, color.colorG / 255, color.colorB / 255));
             _player = player;
             _player.OnChange += OnChange;
             _character.SetSpeed(player.speed);
@@ -140,6 +147,11 @@ namespace _Game.Scripts
         public void Restart()
         {
             _character.Restart();
+        }
+
+        public void SwapWeapon(WeaponCollection weapon)
+        {
+            _gun.SwapWeapon(weapon);
         }
     }
 }

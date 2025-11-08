@@ -1,44 +1,50 @@
 ﻿using System;
-using _Game.Scripts.Gun;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace _Game.Scripts
 {
-    public class Bullet : MonoBehaviour, IPoolable<Bullet>
+    public abstract class Bullet : MonoBehaviour
     {
-        [SerializeField] private float _lifeTime = 3f;
-        [SerializeField] private Rigidbody _rigidbody;
-        private int _damage;
-        private string _playerId;
+        [SerializeField] protected float _lifeTime = 3f;
+        [SerializeField] protected Rigidbody _rigidbody;
+        protected int _damage;
+        protected string _playerId;
         
-        public event Action<Bullet> OnRelease;
-
+        protected CancellationTokenSource _cts;
+        
         public void Init(Vector3 velocity, string playerId = null, int dmg = 0)
         {
             _rigidbody.linearVelocity = velocity;
             _damage = dmg;
             _playerId = playerId;
+            _cts = new CancellationTokenSource();
             DelayDestroy().Forget();
         }
 
-        public void Release()
+        protected async UniTask DelayDestroy()
         {
-            OnRelease?.Invoke(this);
-        }
-
-        private async UniTask DelayDestroy()
-        {
-            await UniTask.WaitForSeconds(_lifeTime, true);
+            await UniTask.WaitForSeconds(_lifeTime, true, cancellationToken: _cts.Token);
             Release();
         }
 
-        private void OnCollisionEnter(Collision other)
+        protected virtual void OnCollisionEnter(Collision other)
         {
             if (other.gameObject.TryGetComponent(out EnemyCharacter health))
                 health.TakeDamage(_damage, _playerId);
             
+            _cts?.Cancel();
             Release();
+        }
+        public virtual void Release()
+        {
+            
+        }
+
+        private void OnDestroy()
+        {
+            _cts?.Cancel();
         }
     }
 }

@@ -13,6 +13,8 @@ using VContainer.Unity;
 public class LevelLifeTimeScope : LifetimeScope
 {
     [SerializeField] private PlayerConfig _playerConfig;
+    [SerializeField] private GameConfig _gameConfig;
+    [SerializeField] private WeaponConfig _weaponConfig;
     protected override void Configure(IContainerBuilder builder)
     {
         base.Configure(builder);
@@ -31,7 +33,8 @@ public class LevelLifeTimeScope : LifetimeScope
 
         builder.Register<GameObjectFactory<PlayerCharacter>>(Lifetime.Singleton);
         builder.Register<GameObjectFactory<EnemyController>>(Lifetime.Singleton);
-        builder.Register<GameObjectPool<Bullet>>(Lifetime.Singleton);
+        builder.Register<GameObjectPool<BulletRifle>>(Lifetime.Singleton);
+        builder.Register<GameObjectPool<Fireball>>(Lifetime.Singleton);
         
         builder.Register<EnemySpawner>(Lifetime.Singleton);
 
@@ -39,8 +42,11 @@ public class LevelLifeTimeScope : LifetimeScope
         builder.Register<BulletPool>(Lifetime.Singleton);
         
         builder.RegisterComponentInHierarchy<PlayerCamera>();
+        builder.RegisterComponentInHierarchy<SpawnPointManager>();
 
         builder.RegisterInstance(_playerConfig);
+        builder.RegisterInstance(_gameConfig);
+        builder.RegisterInstance(_weaponConfig);
 
     }
 }

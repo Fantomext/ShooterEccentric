@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using _Game.Scripts.Gun.StateMachine.Enum;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
@@ -99,5 +100,6 @@ namespace _Game.Scripts
         {
             _health.SetCurrentHealth(newValue);
         }
+
     }
 }

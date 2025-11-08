@@ -1,4 +1,5 @@
 ﻿using System;
+using _Game.Scripts.Gun.StateMachine.Enum;
 using _Game.Scripts.Providers;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -26,6 +27,8 @@ namespace _Game.Scripts
 
         public event Action OnCrouchStart;
         public event Action OnCrouchEnd;
+
+        public event Action<WeaponCollection> OnChooseWeapon; 
         
         public InputSystem(PlayerProvider provider, MultiplayerManager multiplayerManager)
         {
@@ -49,9 +52,12 @@ namespace _Game.Scripts
             
             _playerInput.Player.Crouch.performed += CrouchStart;
             _playerInput.Player.Crouch.canceled += CrouchEnd;
+            
+            _playerInput.Player.FirstWeapon.performed += FirstWeaponChoose;
+            _playerInput.Player.SecondWeapon.performed += SecondWeaponChoose;
         }
 
-       
+        
 
         public void Dispose()
         {
@@ -65,8 +71,22 @@ namespace _Game.Scripts
             
             _playerInput.Player.Crouch.performed -= CrouchStart;
             _playerInput.Player.Crouch.canceled -= CrouchEnd;
+            
+            _playerInput.Player.FirstWeapon.performed -= FirstWeaponChoose;
+            _playerInput.Player.SecondWeapon.performed -= SecondWeaponChoose;
+        }
+
+        private void FirstWeaponChoose(InputAction.CallbackContext obj)
+        {
+            OnChooseWeapon?.Invoke(WeaponCollection.Rifle);
         }
         
+        private void SecondWeaponChoose(InputAction.CallbackContext obj)
+        {
+            OnChooseWeapon?.Invoke(WeaponCollection.MagicWand);
+        }
+
+
         private void CrouchStart(InputAction.CallbackContext obj)
         {
             IsCrouching = true;

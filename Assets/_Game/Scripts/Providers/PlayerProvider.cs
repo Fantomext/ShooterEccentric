@@ -37,7 +37,9 @@ namespace _Game.Scripts.Providers
         public void SetSessionID(string sessionID)
         {
             _player.SessionID = sessionID;
-            _playerGun.SetID(sessionID);
+            _playerGun.SetId(sessionID);
+            
+            _player.gameObject.SetActive(true);
         }
 
         public PlayerCharacter GetCharacter()

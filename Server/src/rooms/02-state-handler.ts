@@ -14,6 +14,9 @@ export class Player extends Schema {
     @type("uint8")
     kills = 0;
 
+    @type("string")
+    color = "";
+
     @type("number")
     pX = Math.floor(Math.random() * 50) - 25;
 
@@ -53,6 +56,12 @@ export class State extends Schema {
         player.maxHP = data.hp;
         player.curHP = data.hp;
 
+        let colorR = Math.floor(Math.random() * 255);
+        let colorG = Math.floor(Math.random() * 255);
+        let colorB = Math.floor(Math.random() * 255);
+
+        player.color = JSON.stringify({colorR, colorG, colorB});
+
         console.log(sessionId);
 
         this.players.set(sessionId, player);
@@ -84,7 +93,7 @@ export class State extends Schema {
 }
 
 export class StateHandlerRoom extends Room<State> {
-    maxClients = 4;
+    maxClients = 12;
 
     onCreate (options) {
         console.log("StateHandlerRoom created!", options);
@@ -99,15 +108,38 @@ export class StateHandlerRoom extends Room<State> {
         this.onMessage("shoot", (client, data) =>
         {
             this.broadcast("Shoot", data, { except : client});
-        })
+        });
 
         this.onMessage("sit", (client, data) =>
         {
             this.broadcast("Sit", data, { except : client});
-        })
+        });
+
+        this.onMessage("swap", (client, data) =>
+        {
+            this.broadcast("Swap", data, { except : client});
+        });
+
+        this.onMessage("win", (client, data) =>
+        {
+            const winID = JSON.parse(data);
+
+            for (var i = 0; i < this.clients.length; i++)
+            {
+                if (this.clients[i].sessionId == winID.key)
+                    this.clients[i].send("Win", true);
+                else
+                    this.clients[i].send("Win", false);
+
+            }
+
+        });
 
         this.onMessage("damage", (client, data) =>
         {
+            console.log(data);
+            console.log(data.id);
+
             const clientID = data.id;
             const player = this.state.players.get(clientID);
 

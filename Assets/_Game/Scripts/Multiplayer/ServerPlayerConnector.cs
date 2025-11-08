@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using _Game.Scripts.Gun;
+using _Game.Scripts.Gun.StateMachine.Enum;
+using _Game.Scripts.Info;
 using _Game.Scripts.Providers;
 using Colyseus.Schema;
 using UnityEngine;
@@ -14,6 +16,7 @@ namespace _Game.Scripts.Multiplayer
         private readonly MultiplayerManager _multiplayerManager;
         private readonly PlayerProvider _playerProvider;
         private readonly EnemyPool _enemyPool;
+        private readonly SpawnPointManager _spawnPointManager;
         
         private Player _player;
         
@@ -24,18 +27,21 @@ namespace _Game.Scripts.Multiplayer
         private const string ChangePosition = "move";
         private const string Shoot = "shoot";
         private const string Crouch = "sit";
+        private const string Win = "win";
+        private const string SwapWeapon = "swap";
 
         private bool _playerIsCrouched;
 
         public event Action<EnemyCharacter> PlayerDie;
         
         [Inject]
-        public ServerPlayerConnector(MultiplayerManager multiplayerManager, PlayerProvider playerProvider, EnemyPool pool, ScoreManager scoreManager)
+        public ServerPlayerConnector(MultiplayerManager multiplayerManager, PlayerProvider playerProvider, EnemyPool pool, ScoreManager scoreManager, SpawnPointManager spawnPointManager)
         {
             _multiplayerManager = multiplayerManager;
             _playerProvider = playerProvider;
             _enemyPool = pool;
             _scoreManager = scoreManager;
+            _spawnPointManager = spawnPointManager;
         }
 
         public void Init()
@@ -46,9 +52,22 @@ namespace _Game.Scripts.Multiplayer
             
             _character.OnMove += SendMessage;
             _playerGun.OnShootData += SendShoot;
+            _playerGun.OnChangeWeapon += ChangeWeapon;
             _character.OnCrouch += CharacterCrouch;
             _multiplayerManager.OnPlayerCreate += PlayerCreated;
             _multiplayerManager.OnPlayerRestart += Restart;
+            _scoreManager.OnPlayerWin += PlayerWin;
+        }
+
+        
+
+        private void PlayerWin()
+        {
+            WinInfo winInfo = new WinInfo();
+            winInfo.key = _multiplayerManager.ReturnSessionId();
+            
+            string jsonWin = JsonUtility.ToJson(winInfo);
+            _multiplayerManager.SendMessage(Win, jsonWin);
         }
 
         private void PlayerCreated(Player player)
@@ -75,6 +94,14 @@ namespace _Game.Scripts.Multiplayer
                 }
             }
             
+        }
+        
+        private void ChangeWeapon(WeaponCollection obj)
+        {
+            SwapInfo swapInfo = new SwapInfo(_multiplayerManager.ReturnSessionId(), obj);
+            
+            string jsonData = JsonUtility.ToJson(swapInfo);
+            _multiplayerManager.SendMessage(SwapWeapon, jsonData);
         }
 
         private void SendShoot(ShootInfo shootInfo)
@@ -119,8 +146,9 @@ namespace _Game.Scripts.Multiplayer
         {
             var data = JsonUtility.FromJson<RestartInfo>(jsonData);
             var enemy = _enemyPool.GetEnemy(data.killer);
-
-            _character.Restart(data, enemy);
+            Vector3 position = _spawnPointManager.GetRandomSpawnPoint();
+            
+            _character.Restart(position, enemy);
         }
 
         public void Dispose()
