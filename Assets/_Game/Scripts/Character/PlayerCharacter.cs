@@ -1,6 +1,5 @@
 using System;
 using _Game.Scripts;
-using _Game.Scripts.Multiplayer;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
@@ -44,6 +43,11 @@ public class PlayerCharacter : Character
         InputDeactivate();
     }
 
+
+    public void MoveToPoint(Vector3 point, Quaternion rotation)
+    {
+        _rigidbody.Move(point, rotation);
+    }
     private void InputActivate()
     {
         _inputSystem.OnMove += ChangeDirection;
@@ -130,26 +134,34 @@ public class PlayerCharacter : Character
     }
     
 
-    public async void Restart(Vector3 position, EnemyCharacter enemy)
+    public async void Restart(Vector3 position, Quaternion rotation, EnemyCharacter enemy)
     {
         _camera.ShowDeathCamera(enemy.transform);
+        await UniTask.WaitForSeconds(1);
         _visualParts.HideModel();
         _inputSystem.BlockInput();
         
-        ChangeDirection(Vector3.zero);
-        CameraChangeDirection(Vector3.zero);
+        ResetVelocity();
         
-        _rigidbody.linearVelocity = Vector3.zero;
-        _rigidbody.angularVelocity = Vector3.zero;
-        await _rigidbody.DOMove(new Vector3(position.x, position.y, position.z), 2.5f).AsyncWaitForCompletion();
+        await _rigidbody.DOMove(new Vector3(position.x, position.y, position.z), 1.5f).AsyncWaitForCompletion();
 
-        OnMove?.Invoke(new Vector3(position.x, position.y, position.z), Vector3.one, Vector2.zero);
+        _rigidbody.rotation = rotation;
+        OnMove?.Invoke(new Vector3(position.x, position.y, position.z), Vector3.one, _rigidbody.transform.eulerAngles);
         
         await _camera.HideDeathCamera();
         _inputSystem.UnblockInput();
         _visualParts.ShowModel();
         
         
+    }
+
+    public void ResetVelocity()
+    {
+        ChangeDirection(Vector3.zero);
+        CameraChangeDirection(Vector3.zero);
+        
+        _rigidbody.linearVelocity = Vector3.zero;
+        _rigidbody.angularVelocity = Vector3.zero;
     }
     
 }

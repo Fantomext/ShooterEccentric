@@ -47,6 +47,7 @@ namespace _Game.Scripts
             _player.OnChange += OnChange;
             _character.SetSpeed(player.speed);
             _character.SetMaxHealth(player.maxHP);
+            
         }
 
         private void SaveReceiveTime()

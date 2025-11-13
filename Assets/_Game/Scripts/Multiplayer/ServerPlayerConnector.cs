@@ -17,6 +17,7 @@ namespace _Game.Scripts.Multiplayer
         private readonly PlayerProvider _playerProvider;
         private readonly EnemyPool _enemyPool;
         private readonly SpawnPointManager _spawnPointManager;
+        private readonly InputSystem _inputSystem;
         
         private Player _player;
         
@@ -35,13 +36,16 @@ namespace _Game.Scripts.Multiplayer
         public event Action<EnemyCharacter> PlayerDie;
         
         [Inject]
-        public ServerPlayerConnector(MultiplayerManager multiplayerManager, PlayerProvider playerProvider, EnemyPool pool, ScoreManager scoreManager, SpawnPointManager spawnPointManager)
+        public ServerPlayerConnector(MultiplayerManager multiplayerManager, PlayerProvider playerProvider, EnemyPool pool, ScoreManager scoreManager, 
+            SpawnPointManager spawnPointManager,
+            InputSystem inputSystem)
         {
             _multiplayerManager = multiplayerManager;
             _playerProvider = playerProvider;
             _enemyPool = pool;
             _scoreManager = scoreManager;
             _spawnPointManager = spawnPointManager;
+            _inputSystem = inputSystem;
         }
 
         public void Init()
@@ -59,8 +63,6 @@ namespace _Game.Scripts.Multiplayer
             _scoreManager.OnPlayerWin += PlayerWin;
         }
 
-        
-
         private void PlayerWin()
         {
             WinInfo winInfo = new WinInfo();
@@ -73,7 +75,11 @@ namespace _Game.Scripts.Multiplayer
         private void PlayerCreated(Player player)
         {
             _player = player;
-            
+            Transform pos = _spawnPointManager.GetRandomSpawnPoint();
+
+            _character.MoveToPoint(pos.position, pos.rotation);
+            SendMessage(pos.position, Vector3.one, pos.eulerAngles);
+
             _player.OnChange += OnChange;
         }
 
@@ -146,9 +152,9 @@ namespace _Game.Scripts.Multiplayer
         {
             var data = JsonUtility.FromJson<RestartInfo>(jsonData);
             var enemy = _enemyPool.GetEnemy(data.killer);
-            Vector3 position = _spawnPointManager.GetRandomSpawnPoint();
+            Transform newPosition = _spawnPointManager.GetRandomSpawnPoint();
             
-            _character.Restart(position, enemy);
+            _character.Restart(newPosition.position, newPosition.rotation, enemy);
         }
 
         public void Dispose()
