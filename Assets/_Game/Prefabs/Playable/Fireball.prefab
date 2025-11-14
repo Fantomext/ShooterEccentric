@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2756009754261851810}
   - component: {fileID: 7317264214422613577}
   - component: {fileID: 5750469016422147471}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Fireball
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -105,9 +105,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8346454908249321336}
     m_Modifications:
+    - target: {fileID: 1769629087, guid: 11c9a5d587e034e43a68d4ebfb901206, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 2972392977303283589, guid: 11c9a5d587e034e43a68d4ebfb901206, type: 3}
       propertyPath: m_Name
       value: FX_Fire_03
+      objectReference: {fileID: 0}
+    - target: {fileID: 2972392977303283589, guid: 11c9a5d587e034e43a68d4ebfb901206, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 2972392977303283608, guid: 11c9a5d587e034e43a68d4ebfb901206, type: 3}
       propertyPath: m_LocalScale.x
@@ -160,6 +168,22 @@ PrefabInstance:
     - target: {fileID: 2972392977303283608, guid: 11c9a5d587e034e43a68d4ebfb901206, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2972392977518692226, guid: 11c9a5d587e034e43a68d4ebfb901206, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2972392978296103414, guid: 11c9a5d587e034e43a68d4ebfb901206, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2972392978941833383, guid: 11c9a5d587e034e43a68d4ebfb901206, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2972392979007978752, guid: 11c9a5d587e034e43a68d4ebfb901206, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -11,14 +11,14 @@ namespace _Game.Scripts.Multiplayer
 
         private Transform _prevPoint;
 
-        public Vector3 GetRandomSpawnPoint()
+        public Transform GetRandomSpawnPoint()
         {
             Transform point = _spawnPoint.GetUniqueRandomElements(1).First();
 
             if (_prevPoint == point)
                return GetRandomSpawnPoint();
 
-            return point.position;
+            return point;
         }
     }
 }

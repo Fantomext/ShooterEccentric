@@ -51,11 +51,11 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
         {
             {"speed", _playerConfig.Speed},
             {"hp", _playerConfig.MaxHealth},
+            
         };
         
         _room = await client.JoinOrCreate<State>(StateHandler, data);
         
-
         _playerProvider.SetSessionID(ReturnSessionId());
 
         _room.OnStateChange += OnChange;
@@ -131,8 +131,6 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
 
     private void CreatePlayer(Player player)
     {
-        _player.transform.position = new Vector3(player.pX , player.pY, player.pZ);
-        
         OnPlayerCreate?.Invoke(player);
     }
 

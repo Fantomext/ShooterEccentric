@@ -30,7 +30,7 @@ namespace _Game.Scripts.Providers
             
             _player.Speed = _playerConfig.Speed;
             _health.SetMax(_playerConfig.MaxHealth);
-            
+
             OnPlayerCreate?.Invoke(_player);
         }
 
