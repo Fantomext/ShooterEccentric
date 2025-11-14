@@ -153,10 +153,14 @@ namespace _Game.Scripts.Multiplayer
 
         public void Dispose()
         {
+            if (_character == null) 
+                return;
+            
             _character.OnMove -= SendMessage;
-            _playerGun.OnShootData -= SendShoot;
             _character.OnCrouch -= CharacterCrouch;
+            _playerGun.OnShootData -= SendShoot;
             _player.OnChange -= OnChange;
+
         }
     }
 }

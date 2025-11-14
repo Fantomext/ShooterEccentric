@@ -16,7 +16,7 @@ namespace _Game.Scripts.Gun
             {
                 health.TakeDamage(_damage, _playerId);
                 _cts?.Cancel();
-            }
+                Release();         }
         }
 
        

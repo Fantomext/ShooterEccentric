@@ -1,7 +1,5 @@
 using System;
 using _Game.Scripts;
-using _Game.Scripts.Multiplayer;
-using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
 using VContainer;
@@ -69,12 +67,14 @@ public class PlayerCharacter : Character
         RotateCamera();
         SendInfo();
         OnSpeedChange();
+
     }
 
     private void FixedUpdate()
     {
         Move();
         RotateBody();
+
     }
     
     private void Jump()
@@ -116,7 +116,7 @@ public class PlayerCharacter : Character
 
     private void RotateBody()
     {
-        _rigidbody.angularVelocity = new Vector3(0f, _mouseDirection.x, 0f);
+        transform.rotation *= Quaternion.Euler(0f, _mouseDirection.x , 0f);
     }
 
     private void RotateCamera()

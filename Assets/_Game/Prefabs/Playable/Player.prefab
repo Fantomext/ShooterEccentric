@@ -177,7 +177,7 @@ MonoBehaviour:
   _rigidbody: {fileID: 2734417455291172734}
   _checkFly: {fileID: 6752306092806579094}
   _cameraPoint: {fileID: 2067904534735496071}
-  _jumpForce: 3
+  _jumpForce: 6
   _minHeadAnge: -45
   _maxHeadAnge: 45
   _jumpDelay: 0.2

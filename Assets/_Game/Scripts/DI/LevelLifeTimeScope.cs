@@ -1,5 +1,6 @@
 using _Game.Scripts;
 using _Game.Scripts.AssetLoader;
+using _Game.Scripts.Attention;
 using _Game.Scripts.Configs;
 using _Game.Scripts.Factory;
 using _Game.Scripts.Gun;

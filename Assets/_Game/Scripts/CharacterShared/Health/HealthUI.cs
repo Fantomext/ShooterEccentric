@@ -26,8 +26,7 @@ namespace _Game.Scripts
 
         public void UpdateHealth(int max, int current)
         {
-            float percent = (float) current / (float)max;
-            Debug.Log(percent);
+            float percent = (float) current / (float) max;
             _healthBar.sizeDelta = new Vector2(_defaultWidth * percent, _healthBar.sizeDelta.y);
         }
     }

@@ -1,5 +1,7 @@
 ﻿using _Game.Scripts.Intefaces;
+using Unity.Mathematics;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace _Game.Scripts.Gun.StateMachine
 {
@@ -50,10 +52,11 @@ namespace _Game.Scripts.Gun.StateMachine
             for (int i = 0; i < 6; i++)
             {
                 Vector3 position = _bulletPoint.position;
-                Vector3 velocity = (_bulletPoint.forward + _bulletPoint.right * Random.Range(-0.05f,0.05f) + _bulletPoint.up * Random.Range(-0.05f,0.05f))  * _speedProjectile;
+                Vector3 velocity = (_bulletPoint.transform.forward + _bulletPoint.transform.right * Random.Range(-0.05f,0.05f) + _bulletPoint.transform.up * Random.Range(-0.05f,0.05f)).normalized  * _speedProjectile;
             
                 Fireball newBullet = _bulletPool.TakeFireball();
                 newBullet.transform.position = position;
+                newBullet.transform.rotation = quaternion.identity;
                 newBullet.Init(velocity, _playerID, _damage);
                 
                 _shootInfo.pX = position.x;

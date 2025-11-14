@@ -12,11 +12,6 @@ public class EnemyGun : Gun
 
     private Func<Bullet> _bulletGetter;
 
-    private void Start()
-    {
-        SwapWeapon(WeaponCollection.Rifle);
-    }
-
     private void OnEnable()
     {
         _character.OnShoot += Shoot;

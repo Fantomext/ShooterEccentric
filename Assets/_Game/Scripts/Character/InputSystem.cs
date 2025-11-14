@@ -17,7 +17,7 @@ namespace _Game.Scripts
         public bool IsAiming { get; private set; }
         public bool IsCrouching { get; private set; }
         
-        private float _mouseSensitivity = 0.2f;
+        private float _mouseSensitivity = 0.1f;
 
         public event Action<Vector2> OnMove;
         public event Action<Vector2> OnCameraDirectionChanged;
@@ -55,6 +55,8 @@ namespace _Game.Scripts
             
             _playerInput.Player.FirstWeapon.performed += FirstWeaponChoose;
             _playerInput.Player.SecondWeapon.performed += SecondWeaponChoose;
+            
+            Cursor.lockState = CursorLockMode.Locked;
         }
 
         
