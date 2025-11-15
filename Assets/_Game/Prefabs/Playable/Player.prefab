@@ -1089,6 +1089,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Staff2_2_6
       objectReference: {fileID: 0}
+    - target: {fileID: 2310254845463632184, guid: b9e9b9817b565da4c87dd7d4d36b234b, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 8092327190978466179, guid: 58991a15198d60f40a31efedc7524273, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
