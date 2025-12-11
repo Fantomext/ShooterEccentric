@@ -7,6 +7,8 @@ namespace _Game.Scripts
 {
     public class EnemyCharacter : Character
     {
+        [SerializeField] private Collider[] _colliders;
+        
         [HideInInspector] public Vector3 TargetPosition = Vector3.zero;
         private float _velocityMagnitude = 0;
         
@@ -87,11 +89,15 @@ namespace _Game.Scripts
         public async void Restart()
         {
             _visualParts.HideModel();
-            _collider.enabled = false;
+            
+            foreach (Collider collider in _colliders)
+                collider.enabled = false;
 
             await UniTask.WaitForSeconds(3.1f);
+
+            foreach (Collider collider in _colliders)
+                collider.enabled = true;
             
-            _collider.enabled = true;
             _visualParts.ShowModel();
         }
 

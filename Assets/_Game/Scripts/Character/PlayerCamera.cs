@@ -9,6 +9,11 @@ public class PlayerCamera : MonoBehaviour
 
     [SerializeField] private float _timeBetweenChanges;
 
+    public void SetTargetMove(Transform target)
+    {
+        _mainCamera.Follow = target;
+    }
+    
     public void ShowDeathCamera(Transform target)
     {
         _deathCamera.LookAt = target;

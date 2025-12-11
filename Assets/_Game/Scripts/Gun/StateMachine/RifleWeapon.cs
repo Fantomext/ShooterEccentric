@@ -52,7 +52,7 @@ namespace _Game.Scripts.Gun.StateMachine
             Vector3 velocity = _bulletPoint.forward * _speedProjectile;
             
             Bullet newBullet = _bulletPool.TakeBullet();
-            newBullet.transform.position = position;
+            newBullet.SetPosition(position);
             newBullet.Init(velocity, _playerID, _damage);
                 
             _shootInfo.pX = position.x;

@@ -14,7 +14,7 @@ namespace _Game.Scripts.Gun
 
         private const string Shoot = "Shoot";
 
-        private void Start()
+        private void Awake()
         {
             _weapons = _playerGun.WeaponsVisual;
         }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
@@ -14,7 +13,7 @@ namespace _Game.Scripts
         
         protected CancellationTokenSource _cts;
         
-        public void Init(Vector3 velocity, string playerId = null, int dmg = 0)
+        public virtual void Init(Vector3 velocity, string playerId = null, int dmg = 0)
         {
             _rigidbody.linearVelocity = velocity;
             _damage = dmg;
@@ -23,16 +22,22 @@ namespace _Game.Scripts
             DelayDestroy().Forget();
         }
 
+        public void SetPosition(Vector3 position)
+        {
+            _rigidbody.linearVelocity = Vector3.zero;
+            _rigidbody.MovePosition(position);
+        }
+
         protected async UniTask DelayDestroy()
         {
             await UniTask.WaitForSeconds(_lifeTime, true, cancellationToken: _cts.Token);
             Release();
         }
 
-        protected virtual void OnCollisionEnter(Collision other)
+        protected virtual void OnTriggerEnter(Collider other)
         {
-            if (other.gameObject.TryGetComponent(out EnemyCharacter health))
-                health.TakeDamage(_damage, _playerId);
+            if (other.gameObject.TryGetComponent(out DamageReceiver receiver))
+                receiver.TakeDamage(_damage, _playerId);
             
             _cts?.Cancel();
         }
@@ -44,6 +49,7 @@ namespace _Game.Scripts
         private void OnDestroy()
         {
             _cts?.Cancel();
+            _cts?.Dispose();
         }
     }
 }

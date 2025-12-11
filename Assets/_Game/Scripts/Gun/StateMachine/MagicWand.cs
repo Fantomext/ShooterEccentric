@@ -55,8 +55,7 @@ namespace _Game.Scripts.Gun.StateMachine
                 Vector3 velocity = (_bulletPoint.transform.forward + _bulletPoint.transform.right * Random.Range(-0.05f,0.05f) + _bulletPoint.transform.up * Random.Range(-0.05f,0.05f)).normalized  * _speedProjectile;
             
                 Fireball newBullet = _bulletPool.TakeFireball();
-                newBullet.transform.position = position;
-                newBullet.transform.rotation = quaternion.identity;
+                newBullet.SetPosition(position);
                 newBullet.Init(velocity, _playerID, _damage);
                 
                 _shootInfo.pX = position.x;

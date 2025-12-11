@@ -25,7 +25,7 @@ public class EnemyGun : Gun
     public void Shoot(Vector3 position, Vector3 velocity, string id)
     { 
         Bullet newBullet = _bulletGetter.Invoke();
-        newBullet.transform.position = position;
+        newBullet.SetPosition(position);
         newBullet.Init(velocity, id);
 
         OnShoot?.Invoke();

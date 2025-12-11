@@ -10,13 +10,14 @@ namespace _Game.Scripts.Gun
             OnRelease?.Invoke(this);
         }
         
-        protected virtual void OnCollisionEnter(Collision other)
+        protected override void OnTriggerEnter(Collider other)
         {
-            if (other.gameObject.TryGetComponent(out EnemyCharacter health))
+            if (other.gameObject.TryGetComponent(out DamageReceiver receiver))
             {
-                health.TakeDamage(_damage, _playerId);
+                receiver.TakeDamage(_damage, _playerId);
                 _cts?.Cancel();
-                Release();         }
+                Release();         
+            }
         }
 
        

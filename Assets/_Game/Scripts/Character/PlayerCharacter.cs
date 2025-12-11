@@ -28,9 +28,7 @@ public class PlayerCharacter : Character
 
     private void Awake()
     {
-        _camera.transform.parent = _cameraPoint.transform;
-        _camera.transform.localPosition = Vector3.zero;
-        _camera.transform.localRotation = Quaternion.identity;
+        _camera.SetTargetMove(_cameraPoint.transform);
     }
 
     private void OnEnable()
@@ -70,17 +68,14 @@ public class PlayerCharacter : Character
     
     private void Update()
     {
-        RotateCamera();
         SendInfo();
         OnSpeedChange();
-
     }
 
     private void FixedUpdate()
     {
         Move();
-        RotateBody();
-
+        RotateCamera();
     }
     
     private void Jump()
@@ -122,30 +117,36 @@ public class PlayerCharacter : Character
 
     private void RotateBody()
     {
-        transform.rotation *= Quaternion.Euler(0f, _mouseDirection.x , 0f);
+        //transform.rotation *= Quaternion.Euler(0f, _mouseDirection.x, 0f);
     }
 
     private void RotateCamera()
     {
+        Vector3 euelerBody = transform.eulerAngles;
+        
         Vector3 eueler = _headTransform.localEulerAngles;
         eueler.x = eueler.x > 180 ? eueler.x - 360 : eueler.x;
         
         eueler.x = Mathf.Clamp(eueler.x - _mouseDirection.y, _minHeadAnge, _maxHeadAnge);
         
+        
        _headTransform.transform.localEulerAngles = new Vector3(eueler.x, eueler.y,eueler.z);
+       transform.eulerAngles = new Vector3(euelerBody.x, euelerBody.y + _mouseDirection.x, euelerBody.z);
     }
     
 
     public async void Restart(Vector3 position, Quaternion rotation, EnemyCharacter enemy)
     {
         _camera.ShowDeathCamera(enemy.transform);
-        await UniTask.WaitForSeconds(1);
+        _collider.enabled = false;
+        _rigidbody.useGravity = false;
         _visualParts.HideModel();
         _inputSystem.BlockInput();
-        
         ResetVelocity();
         
-        await _rigidbody.DOMove(new Vector3(position.x, position.y, position.z), 1.5f).AsyncWaitForCompletion();
+        await UniTask.WaitForSeconds(2);
+        
+        await _rigidbody.DOMove(new Vector3(position.x, position.y, position.z), 0.5f).AsyncWaitForCompletion();
 
         _rigidbody.rotation = rotation;
         OnMove?.Invoke(new Vector3(position.x, position.y, position.z), Vector3.one, _rigidbody.transform.eulerAngles);
@@ -153,6 +154,8 @@ public class PlayerCharacter : Character
         await _camera.HideDeathCamera();
         _inputSystem.UnblockInput();
         _visualParts.ShowModel();
+        _collider.enabled = true;
+        _rigidbody.useGravity = true;
         
         
     }
